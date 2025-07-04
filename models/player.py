@@ -1,3 +1,4 @@
+# Modèle représentant un joueur d'échecs
 class Player:
     def __init__(self, national_id, last_name, first_name, birth_date):
         self.national_id = national_id
@@ -7,6 +8,7 @@ class Player:
         self.score = 0
 
     def to_dict(self):
+        # Convertit un joueur en dictionnaire (pour sauvegarde JSON)
         return {
             "national_id": self.national_id,
             "last_name": self.last_name,
@@ -17,6 +19,7 @@ class Player:
 
     @staticmethod
     def from_dict(data):
+        # Crée un joueur à partir d'un dictionnaire
         player = Player(
             data["national_id"],
             data["last_name"],

@@ -1,3 +1,4 @@
+# Modèle représentant un tour dans un tournoi
 from datetime import datetime
 from models.match import Match
 import random
@@ -10,6 +11,7 @@ class Round:
         self.end_time = None
 
     def generate_matches(self, players):
+        # Génère les paires de joueurs aléatoirement pour ce tour
         sorted_players = sorted(players, key=lambda p: p.score, reverse=True)
         random.shuffle(sorted_players)
         for i in range(0, len(sorted_players), 2):
@@ -18,9 +20,11 @@ class Round:
                 self.matches.append(match)
 
     def end_round(self):
+        # Marque la fin du tour avec un horodatage
         self.end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def to_dict(self):
+        # Sérialisation du tour pour sauvegarde JSON
         return {
             "name": self.name,
             "matches": [match.to_tuple() for match in self.matches],

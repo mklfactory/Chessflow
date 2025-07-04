@@ -1,6 +1,4 @@
-from models.player import Player
-from models.round import Round
-
+# Modèle représentant un tournoi d'échecs
 class Tournament:
     def __init__(self, name, place, start_date, end_date, description, rounds=4):
         self.name = name
@@ -21,6 +19,7 @@ class Tournament:
         self.current_round += 1
 
     def to_dict(self):
+        # Sérialise les données du tournoi
         return {
             "name": self.name,
             "place": self.place,
@@ -32,17 +31,3 @@ class Tournament:
             "players": [p.to_dict() for p in self.players],
             "round_list": [r.to_dict() for r in self.round_list]
         }
-
-    @staticmethod
-    def from_dict(data):
-        tournament = Tournament(
-            data["name"],
-            data["place"],
-            data["start_date"],
-            data["end_date"],
-            data["description"],
-            data["rounds"]
-        )
-        tournament.current_round = data["current_round"]
-        tournament.players = [Player.from_dict(p) for p in data["players"]]
-        return tournament
