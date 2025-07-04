@@ -1,0 +1,37 @@
+[
+    {
+        "name": "rivedoux",
+        "place": "rivedoux",
+        "start_date": "27/06/2025",
+        "end_date": "28/06/2025",
+        "description": "tournoi amateur Rivedoux",
+        "number_of_rounds": 4,
+        "current_round": 0,
+        "players": [],
+        "rounds": []
+    },
+    {
+        "name": "Tournoi la flotte",
+        "place": "La Flotte",
+        "start_date": "01/07/2025",
+        "end_date": "02/07/2025",
+        "description": "Tournoi Amateur",
+        "number_of_rounds": 4,
+        "current_round": 0,
+        "players": [
+            {
+                "chess_id": "AB12345",
+                "last_name": "Lardeux",
+                "first_name": "Michael",
+                "birthdate": "17/11/1972"
+            },
+            {
+                "chess_id": "AB12346",
+                "last_name": "Lardeux",
+                "first_name": "Emma",
+                "birthdate": "1/1/2000"
+            }
+        ],
+        "rounds": []
+    }
+]
