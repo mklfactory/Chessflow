@@ -10,5 +10,11 @@
         "last_name": "Lardeux",
         "first_name": "Emma",
         "birthdate": "1/1/2000"
+    },
+    {
+        "chess_id": "AB12345",
+        "last_name": "Lardeux",
+        "first_name": "Michel",
+        "birthdate": "08 01 1948"
     }
 ]
