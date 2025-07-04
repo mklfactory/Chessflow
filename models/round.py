@@ -1,29 +1,29 @@
-
+from datetime import datetime
+from models.match import Match
+import random
 
 class Round:
     def __init__(self, name):
         self.name = name
         self.matches = []
-        self.start_time = None
+        self.start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.end_time = None
 
-    def add_match(self, match):
-        self.matches.append(match)
+    def generate_matches(self, players):
+        sorted_players = sorted(players, key=lambda p: p.score, reverse=True)
+        random.shuffle(sorted_players)
+        for i in range(0, len(sorted_players), 2):
+            if i + 1 < len(sorted_players):
+                match = Match(sorted_players[i], sorted_players[i+1])
+                self.matches.append(match)
+
+    def end_round(self):
+        self.end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def to_dict(self):
-        r = {
+        return {
             "name": self.name,
-            "matches": [m.to_dict() for m in self.matches],
+            "matches": [match.to_tuple() for match in self.matches],
             "start_time": self.start_time,
             "end_time": self.end_time,
         }
-        return r
-
-    @staticmethod
-    def from_dict(data):
-        from models.match import Match
-        round_obj = Round(data["name"])
-        round_obj.matches = [Match.from_dict(m) for m in data.get("matches", [])]
-        round_obj.start_time = data.get("start_time")
-        round_obj.end_time = data.get("end_time")
-        return round_obj
