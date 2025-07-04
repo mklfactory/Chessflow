@@ -1,18 +1,24 @@
-from models.round import Round
 from models.player import Player
-
+from models.round import Round
 
 class Tournament:
-    def __init__(self, name, place, start_date, end_date, description="", number_of_rounds=4):
+    def __init__(self, name, place, start_date, end_date, description, rounds=4):
         self.name = name
         self.place = place
         self.start_date = start_date
         self.end_date = end_date
         self.description = description
-        self.number_of_rounds = number_of_rounds
+        self.rounds = rounds
         self.current_round = 0
-        self.rounds = []
+        self.round_list = []
         self.players = []
+
+    def add_player(self, player):
+        self.players.append(player)
+
+    def add_round(self, round_obj):
+        self.round_list.append(round_obj)
+        self.current_round += 1
 
     def to_dict(self):
         return {
@@ -21,26 +27,22 @@ class Tournament:
             "start_date": self.start_date,
             "end_date": self.end_date,
             "description": self.description,
-            "number_of_rounds": self.number_of_rounds,
+            "rounds": self.rounds,
             "current_round": self.current_round,
-            "rounds": [r.to_dict() for r in self.rounds],
-            "players": [p.to_dict() for p in self.players]
+            "players": [p.to_dict() for p in self.players],
+            "round_list": [r.to_dict() for r in self.round_list]
         }
 
     @staticmethod
     def from_dict(data):
-        t = Tournament(
+        tournament = Tournament(
             data["name"],
             data["place"],
             data["start_date"],
             data["end_date"],
-            data.get("description", ""),
-            data.get("number_of_rounds", 4)
+            data["description"],
+            data["rounds"]
         )
-        t.current_round = data.get("current_round", 0)
-        t.players = [Player.from_dict(p) for p in data.get("players", [])]
-        t.rounds = [Round.from_dict(r) for r in data.get("rounds", [])]
-        return t
-
-    def __str__(self):
-        return f"{self.name} - {self.place} ({self.start_date} au {self.end_date})"
+        tournament.current_round = data["current_round"]
+        tournament.players = [Player.from_dict(p) for p in data["players"]]
+        return tournament
