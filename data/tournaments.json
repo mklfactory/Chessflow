@@ -1,28 +1,12 @@
 [
   {
-    "name": "Rivetour",
-    "place": "Rivedoux",
-    "start_date": "04 07 2025",
-    "end_date": "05 07 2025",
-    "description": "d\u00e9butant",
-    "rounds": 4,
-    "current_round": 2,
-    "players": [
-      {
-        "national_id": "aaaasdd",
-        "last_name": "Lardeux",
-        "first_name": "Michael",
-        "birth_date": "17/11/1972",
-        "score": 0
-      }
-    ],
-    "round_list": [
-      {
-        "name": "Round 2",
-        "matches": [],
-        "start_time": "2025-07-04 17:58:49",
-        "end_time": "2025-07-04 17:58:49"
-      }
-    ]
+    "id": "9ac16e76-f66f-4469-93cb-14abae66416c",
+    "name": "Tour Rivedouux",
+    "location": "Rivedoux",
+    "start_date": "2025-07-18",
+    "end_date": "2025-07-19",
+    "description": "first",
+    "players": [],
+    "rounds": []
   }
 ]

@@ -1,16 +1,16 @@
 [
   {
-    "national_id": "aaaasdd",
-    "last_name": "Lardeux",
-    "first_name": "Michael",
-    "birth_date": "17/11/1972",
-    "score": 0
+    "id": "57e34f4d-8bef-42c9-81cb-9a980a49b30b",
+    "first_name": "rrr",
+    "last_name": "rrr",
+    "birthdate": "2000-01-01",
+    "ranking": 1
   },
   {
-    "national_id": "ezezrtzerez",
-    "last_name": "Lardeux",
-    "first_name": "Emma",
-    "birth_date": "12 12 2000",
-    "score": 0
+    "id": "b9045652-cba3-4356-9ffe-59ba3effe0ec",
+    "first_name": "ggg",
+    "last_name": "ggg",
+    "birthdate": "2000-01-02",
+    "ranking": 2
   }
 ]

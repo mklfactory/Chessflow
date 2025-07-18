@@ -1,47 +1,52 @@
 import json
-import os
+import uuid
+from pathlib import Path
+
+DATA_FILE = Path("data/players.json")
 
 class Player:
-    def __init__(self, national_id, last_name, first_name, birth_date):
-        self.national_id = national_id
-        self.last_name = last_name
+    def __init__(self, id=None, first_name="", last_name="", birthdate="", ranking=0):
+        self.id = id or str(uuid.uuid4())
         self.first_name = first_name
-        self.birth_date = birth_date
-        self.score = 0
+        self.last_name = last_name
+        self.birthdate = birthdate
+        self.ranking = ranking
 
     def to_dict(self):
         return {
-            "national_id": self.national_id,
-            "last_name": self.last_name,
+            "id": self.id,
             "first_name": self.first_name,
-            "birth_date": self.birth_date,
-            "score": self.score,
+            "last_name": self.last_name,
+            "birthdate": self.birthdate,
+            "ranking": self.ranking
         }
 
-    @staticmethod
-    def from_dict(data):
-        player = Player(
-            data["national_id"],
-            data["last_name"],
-            data["first_name"],
-            data["birth_date"]
-        )
-        player.score = data.get("score", 0)
-        return player
-
-    def save(self, filepath="data/players.json"):
-        players = Player.load_all(filepath)
+    def save(self):
+        players = Player.load_all()
+        players = [p for p in players if p.id != self.id]
         players.append(self)
-        Player.save_all(players, filepath)
+        with open(DATA_FILE, "w") as f:
+            json.dump([p.to_dict() for p in players], f, indent=2)
 
-    @staticmethod
-    def load_all(filepath="data/players.json"):
-        if not os.path.exists(filepath):
+    @classmethod
+    def load_all(cls):
+        if not DATA_FILE.exists():
             return []
-        with open(filepath, "r", encoding="utf-8") as f:
-            return [Player.from_dict(p) for p in json.load(f)]
+        with open(DATA_FILE) as f:
+            data = json.load(f)
+        return [cls(**player) for player in data]
 
-    @staticmethod
-    def save_all(players, filepath="data/players.json"):
-        with open(filepath, "w", encoding="utf-8") as f:
-            json.dump([p.to_dict() for p in players], f, indent=4)
+    @classmethod
+    def load_by_id(cls, player_id):
+        players = cls.load_all()
+        for player in players:
+            if player.id == player_id:
+                return player
+        return None
+
+    @classmethod
+    def delete(cls, player_id):
+        players = cls.load_all()
+        players = [p for p in players if p.id != player_id]
+        with open(DATA_FILE, "w") as f:
+            json.dump([p.to_dict() for p in players], f, indent=2)

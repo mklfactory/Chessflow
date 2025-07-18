@@ -1,4 +1,5 @@
-class View:
+
+   class View:
     def main_menu(self):
         print("\n--- Menu Principal ---")
         print("1. Ajouter un joueur")
