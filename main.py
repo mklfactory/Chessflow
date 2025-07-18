@@ -1,15 +1,12 @@
-import tkinter as tk
-from controllers.controller import TournamentController
+# Entry point with CLI menu interface using rich for UI
+from controllers.main_controller import MainController
+from rich.console import Console
 
-# Point d'entrée principal de l'application
-# Crée une fenêtre principale et initialise le contrôleur du tournoi
+console = Console()
 
 def main():
-    root = tk.Tk()
-    root.title("ChessFlow - Centre Échecs")
-    root.geometry("500x400")
-    app = TournamentController(root)
-    root.mainloop()
+    controller = MainController(console)
+    controller.run()
 
 if __name__ == "__main__":
     main()
