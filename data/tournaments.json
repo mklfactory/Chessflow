@@ -1,22 +1,2 @@
 [
-  {
-    "id": "9ac16e76-f66f-4469-93cb-14abae66416c",
-    "name": "Tour Rivedouux",
-    "location": "Rivedoux",
-    "start_date": "2025-07-18",
-    "end_date": "2025-07-19",
-    "description": "first",
-    "players": [],
-    "rounds": []
-  },
-  {
-    "id": "07fb74e0-6abf-433b-9b88-d28a4e122aae",
-    "name": "lARDEUIX",
-    "location": "la FLOTRTE",
-    "start_date": "2025-07-22",
-    "end_date": "2025-07-23",
-    "description": "EE",
-    "players": [],
-    "rounds": []
-  }
 ]

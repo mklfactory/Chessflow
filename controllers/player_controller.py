@@ -27,7 +27,8 @@ class PlayerController:
 
     def list_players(self):
         players = Player.load_all()
-        self.view.show_players(players)
+        players_sorted = Player.sort_alphabetically(players)
+        self.view.show_players(players_sorted)
 
     def update_player(self):
         player_id = self.view.ask_player_id()

@@ -1,9 +1,12 @@
 from models.tournament import Tournament
+from models.player import Player
 from views.tournament_view import TournamentView
+from views.round_view import RoundView
 
 class TournamentController:
     def __init__(self, interface):
         self.view = TournamentView(interface)
+        self.round_view = RoundView(interface)
 
     def run(self):
         while True:
@@ -16,6 +19,8 @@ class TournamentController:
                 self.update_tournament()
             elif choice == "4":
                 self.delete_tournament()
+            elif choice == "5":
+                self.manage_tournament()
             elif choice == "0":
                 break
 
@@ -45,3 +50,50 @@ class TournamentController:
         tournament_id = self.view.ask_tournament_id()
         Tournament.delete(tournament_id)
         self.view.show_message("Tournoi supprimé.")
+
+    def manage_tournament(self):
+        tournament_id = self.view.ask_tournament_id()
+        tournament = Tournament.load_by_id(tournament_id)
+        if not tournament:
+            self.view.show_message("Tournoi introuvable.")
+            return
+        while True:
+            choice = self.view.display_manage_menu()
+            if choice == "1":
+                self.add_player_to_tournament(tournament)
+            elif choice == "2":
+                self.list_tournament_players(tournament)
+            elif choice == "3":
+                self.create_next_round(tournament)
+            elif choice == "4":
+                self.list_rounds_and_matches(tournament)
+            elif choice == "0":
+                break
+
+    def add_player_to_tournament(self, tournament):
+        from controllers.player_controller import PlayerController
+        player_id = self.view.ask_player_id()
+        player = Player.load_by_id(player_id)
+        if not player:
+            self.view.show_message("Joueur introuvable.")
+            return
+        tournament.add_player(player)
+        tournament.save()
+        self.view.show_message(f"Joueur {player.full_name()} ajouté au tournoi.")
+
+    def list_tournament_players(self, tournament):
+        players_sorted = Player.sort_alphabetically(tournament.players)
+        self.view.show_players(players_sorted)
+
+    def create_next_round(self, tournament):
+        round_obj = tournament.create_next_round()
+        if round_obj:
+            self.view.show_message(f"Nouveau round créé : {round_obj.name}")
+        else:
+            self.view.show_message("Tournoi déjà terminé.")
+
+    def list_rounds_and_matches(self, tournament):
+        for r in tournament.rounds:
+            self.view.show_round_summary(r)
+            for i, m in enumerate(r.matches):
+                self.view.show_match_detail(i+1, m)

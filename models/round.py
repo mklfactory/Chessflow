@@ -1,55 +1,39 @@
-import json
 import uuid
-from pathlib import Path
-from models.match import Match
-
-DATA_FILE = Path("data/rounds.json")
+from datetime import datetime
 
 class Round:
-    def __init__(self, id=None, name="", matches=None):
+    def __init__(self, id=None, name="", matches=None, start_time=None, end_time=None):
         self.id = id or str(uuid.uuid4())
         self.name = name
-        self.matches = matches or []
+        self.matches = matches or []  # liste d’objets Match
+        self.start_time = start_time
+        self.end_time = end_time
 
     def to_dict(self):
         return {
             "id": self.id,
             "name": self.name,
-            "matches": self.matches,
+            "matches": [m.to_list() for m in self.matches],
+            "start_time": self.start_time,
+            "end_time": self.end_time,
         }
 
-    def save(self):
-        rounds = Round.load_all()
-        rounds = [r for r in rounds if r.id != self.id]
-        rounds.append(self)
-        with open(DATA_FILE, "w") as f:
-            json.dump([r.to_dict() for r in rounds], f, indent=2)
-
-    @classmethod
-    def load_all(cls):
-        if not DATA_FILE.exists():
-            return []
-        with open(DATA_FILE) as f:
-            data = json.load(f)
-        return [cls(**r) for r in data]
-
-    @classmethod
-    def load_by_id(cls, round_id):
-        rounds = cls.load_all()
-        for r in rounds:
-            if r.id == round_id:
-                return r
-        return None
-
-    @classmethod
-    def delete(cls, round_id):
-        rounds = cls.load_all()
-        rounds = [r for r in rounds if r.id != round_id]
-        with open(DATA_FILE, "w") as f:
-            json.dump([r.to_dict() for r in rounds], f, indent=2)
+    @staticmethod
+    def from_dict(data):
+        from models.match import Match
+        matches = [Match.from_list(m) for m in data.get("matches", [])]
+        return Round(
+            id=data.get("id"),
+            name=data.get("name"),
+            matches=matches,
+            start_time=data.get("start_time"),
+            end_time=data.get("end_time"),
+        )
 
     @staticmethod
-    def create_for_tournament(tournament):
-        name = f"Round {len(tournament.rounds) + 1}"
-        matches = Match.create_pairings(tournament.players)
-        return Round(name=name, matches=matches)
+    def start_round(round_obj):
+        round_obj.start_time = datetime.now().isoformat()
+
+    @staticmethod
+    def end_round(round_obj):
+        round_obj.end_time = datetime.now().isoformat()

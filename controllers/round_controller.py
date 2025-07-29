@@ -1,6 +1,6 @@
 from models.round import Round
-from models.tournament import Tournament
 from views.round_view import RoundView
+from models.tournament import Tournament
 
 class RoundController:
     def __init__(self, interface):
@@ -8,13 +8,13 @@ class RoundController:
 
     def run(self):
         while True:
-            choice = self.view.display_menu()
+            choice = self.view.display_round_menu()
             if choice == "1":
                 self.create_round()
             elif choice == "2":
-                self.list_rounds()
+                self.view_rounds()
             elif choice == "3":
-                self.update_match_results()
+                self.update_match_result()
             elif choice == "4":
                 self.delete_round()
             elif choice == "0":
@@ -26,28 +26,48 @@ class RoundController:
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
             return
-        new_round = Round.create_for_tournament(tournament)
-        new_round.save()
-        self.view.show_message(f"Round '{new_round.name}' créé.")
 
-    def list_rounds(self):
+        round_obj = tournament.create_next_round()
+        if round_obj:
+            self.view.show_message(f"Round créé : {round_obj.name}")
+        else:
+            self.view.show_message("Tous les rounds ont déjà été créés.")
+
+    def view_rounds(self):
         rounds = Round.load_all()
         self.view.show_rounds(rounds)
 
-    def update_match_results(self):
+    def update_match_result(self):
+        tournament_id = self.view.ask_tournament_id()
+        tournament = Tournament.load_by_id(tournament_id)
+        if not tournament:
+            self.view.show_message("Tournoi introuvable.")
+            return
+
         round_id = self.view.ask_round_id()
-        round_obj = Round.load_by_id(round_id)
+        round_obj = next((r for r in tournament.rounds if r.id == round_id), None)
         if not round_obj:
             self.view.show_message("Round introuvable.")
             return
-        for idx, match in enumerate(round_obj.matches):
-            self.view.show_match(match, idx)
+
+        for i, match in enumerate(round_obj.matches):
+            self.view.show_match(match, i)
             score1, score2 = self.view.ask_scores()
-            match[2], match[3] = score1, score2
-        round_obj.save()
-        self.view.show_message("Résultats mis à jour.")
+            match.score1 = score1
+            match.score2 = score2
+
+        Round.end_round(round_obj)
+        tournament.save()
+        self.view.show_message("Résultats mis à jour et round terminé.")
 
     def delete_round(self):
+        tournament_id = self.view.ask_tournament_id()
+        tournament = Tournament.load_by_id(tournament_id)
+        if not tournament:
+            self.view.show_message("Tournoi introuvable.")
+            return
+
         round_id = self.view.ask_round_id()
-        Round.delete(round_id)
-        self.view.show_message("Round supprimé.")
+        tournament.rounds = [r for r in tournament.rounds if r.id != round_id]
+        tournament.save()
+        self.view.show_message(f"Round {round_id} supprimé.")

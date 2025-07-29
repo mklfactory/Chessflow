@@ -3,10 +3,10 @@ from rich.table import Table
 
 class PlayerView:
     def __init__(self, interface):
-        self.console = interface.console
+        self.console = Console()
 
     def display_menu(self):
-        self.console.print("[bold cyan]\n--- Gestion des joueurs ---[/bold cyan]")
+        self.console.print("\n[bold magenta]--- Gestion des joueurs ---[/bold magenta]")
         self.console.print("1. Ajouter un joueur")
         self.console.print("2. Lister les joueurs")
         self.console.print("3. Modifier un joueur")
@@ -17,13 +17,15 @@ class PlayerView:
     def ask_player_data(self):
         first_name = input("Prénom : ")
         last_name = input("Nom : ")
-        birthdate = input("Date de naissance (YYYY-MM-DD) : ")
-        ranking = int(input("Classement : "))
+        birth_date = input("Date de naissance (YYYY-MM-DD) : ")
+        gender = input("Genre (M/F) : ")
+        national_id = input("Identifiant national d’échecs (ex: AB12345) : ")
         return {
             "first_name": first_name,
             "last_name": last_name,
-            "birthdate": birthdate,
-            "ranking": ranking,
+            "birth_date": birth_date,
+            "gender": gender,
+            "national_id": national_id,
         }
 
     def ask_player_id(self):
@@ -31,14 +33,12 @@ class PlayerView:
 
     def show_players(self, players):
         table = Table(title="Liste des joueurs")
-        table.add_column("ID")
-        table.add_column("Prénom")
-        table.add_column("Nom")
-        table.add_column("Date de naissance")
-        table.add_column("Classement")
+        table.add_column("ID", style="dim", width=36)
+        table.add_column("Nom complet")
+        table.add_column("ID National")
         for p in players:
-            table.add_row(p.id, p.first_name, p.last_name, p.birthdate, str(p.ranking))
+            table.add_row(p.id, p.full_name(), p.national_id)
         self.console.print(table)
 
-    def show_message(self, message):
-        self.console.print(f"[green]{message}[/green]")
+    def show_message(self, msg):
+        self.console.print(f"[green]{msg}[/green]")

@@ -1,18 +1,15 @@
-from rich.console import Console
-from rich.table import Table
-
 class RoundView:
     def __init__(self, interface):
-        self.console = interface.console
+        pass
 
-    def display_menu(self):
-        self.console.print("[bold yellow]\n--- Gestion des rounds ---[/bold yellow]")
-        self.console.print("1. Créer un round")
-        self.console.print("2. Afficher les rounds")
-        self.console.print("3. Modifier les résultats d'un match")
-        self.console.print("4. Supprimer un round")
-        self.console.print("0. Retour")
-        return input("Votre choix : ")
+    def display_round_menu(self):
+        print("\n--- Gestion des rounds ---")
+        print("1. Créer un round")
+        print("2. Voir les rounds")
+        print("3. Mettre à jour les résultats d'un match")
+        print("4. Supprimer un round")
+        print("0. Retour")
+        return input("Choisissez une option : ")
 
     def ask_tournament_id(self):
         return input("ID du tournoi : ")
@@ -20,21 +17,19 @@ class RoundView:
     def ask_round_id(self):
         return input("ID du round : ")
 
-    def ask_scores(self):
-        s1 = float(input("Score joueur 1 : "))
-        s2 = float(input("Score joueur 2 : "))
-        return s1, s2
-
     def show_rounds(self, rounds):
-        table = Table(title="Rounds")
-        table.add_column("ID")
-        table.add_column("Nom")
         for r in rounds:
-            table.add_row(r.id, r.name)
-        self.console.print(table)
+            print(f"{r.id} - {r.name} - Début: {r.start_time} - Fin: {r.end_time}")
 
     def show_match(self, match, index):
-        self.console.print(f"[yellow]Match {index + 1}: {match[0]} vs {match[1]}[/yellow]")
+        p1 = match.player1.full_name() if match.player1 else "Bye"
+        p2 = match.player2.full_name() if match.player2 else "Bye"
+        print(f"Match {index+1}: {p1} vs {p2} (Scores actuels : {match.score1} - {match.score2})")
 
-    def show_message(self, message):
-        self.console.print(f"[green]{message}[/green]")
+    def ask_scores(self):
+        score1 = float(input("Score joueur 1 : "))
+        score2 = float(input("Score joueur 2 : "))
+        return score1, score2
+
+    def show_message(self, msg):
+        print(f"[INFO] {msg}")
