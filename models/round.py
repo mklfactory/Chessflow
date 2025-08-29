@@ -1,11 +1,12 @@
 import uuid
 from datetime import datetime
+from models.match import Match
 
 class Round:
     def __init__(self, id=None, name="", matches=None, start_time=None, end_time=None):
         self.id = id or str(uuid.uuid4())
         self.name = name
-        self.matches = matches or []  # Match object list
+        self.matches = matches or []   # liste d'objets Match
         self.start_time = start_time
         self.end_time = end_time
 
@@ -20,7 +21,6 @@ class Round:
 
     @staticmethod
     def from_dict(data):
-        from models.match import Match
         matches = [Match.from_list(m) for m in data.get("matches", [])]
         return Round(
             id=data.get("id"),
@@ -32,8 +32,8 @@ class Round:
 
     @staticmethod
     def start_round(round_obj):
-        round_obj.start_time = datetime.now().isoformat()
+        round_obj.start_time = datetime.now().isoformat(timespec="seconds")
 
     @staticmethod
     def end_round(round_obj):
-        round_obj.end_time = datetime.now().isoformat()
+        round_obj.end_time = datetime.now().isoformat(timespec="seconds")
