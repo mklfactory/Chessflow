@@ -1,46 +1,64 @@
 import json
 import os
-from datetime import datetime
+from models.match import Match
+
+ROUNDS_FILE = "data/rounds.json"
 
 class Round:
-    FILE_PATH = "data/rounds.json"
-
-    def __init__(self, name, matches=None, start_date=None, end_date=None):
+    def __init__(self, name, matches=None, start_time=None, end_time=None):
         self.name = name
         self.matches = matches if matches else []
-        self.start_date = start_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.end_date = end_date
+        self.start_time = start_time
+        self.end_time = end_time
 
     def to_dict(self):
-        """Convert Round object to dictionary."""
         return {
             "name": self.name,
-            "matches": self.matches,
-            "start_date": self.start_date,
-            "end_date": self.end_date,
+            "matches": [m.to_dict() for m in self.matches],
+            "start_time": self.start_time,
+            "end_time": self.end_time
         }
 
-    def save(self):
-        """Save the round to rounds.json."""
-        rounds = []
-        if os.path.exists(self.FILE_PATH):
-            with open(self.FILE_PATH, "r", encoding="utf-8") as f:
-                try:
-                    rounds = json.load(f)
-                except json.JSONDecodeError:
-                    rounds = []
-        rounds.append(self.to_dict())
-        with open(self.FILE_PATH, "w", encoding="utf-8") as f:
-            json.dump(rounds, f, indent=4, ensure_ascii=False)
+    def save(self, tournament_id):
+        """Save round in rounds.json under its tournament_id"""
+        if not os.path.exists("data"):
+            os.makedirs("data")
+
+        data = {}
+        if os.path.exists(ROUNDS_FILE):
+            with open(ROUNDS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+        if str(tournament_id) not in data:
+            data[str(tournament_id)] = []
+
+        # Update or append round
+        existing_rounds = data[str(tournament_id)]
+        for i, r in enumerate(existing_rounds):
+            if r["name"] == self.name:
+                existing_rounds[i] = self.to_dict()
+                break
+        else:
+            existing_rounds.append(self.to_dict())
+
+        with open(ROUNDS_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
 
     @classmethod
-    def load_all(cls):
-        """Load all rounds from rounds.json."""
-        if not os.path.exists(cls.FILE_PATH):
+    def load_all(cls, tournament_id):
+        """Load all rounds for a given tournament"""
+        if not os.path.exists(ROUNDS_FILE):
             return []
-        with open(cls.FILE_PATH, "r", encoding="utf-8") as f:
-            try:
-                data = json.load(f)
-                return [Round(**r) for r in data]
-            except json.JSONDecodeError:
-                return []
+        with open(ROUNDS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        if str(tournament_id) not in data:
+            return []
+
+        rounds = []
+        for r in data[str(tournament_id)]:
+            matches = [Match.from_dict(m) for m in r["matches"]]
+            rounds.append(
+                cls(r["name"], matches, r.get("start_time"), r.get("end_time"))
+            )
+        return rounds
