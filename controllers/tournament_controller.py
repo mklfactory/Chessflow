@@ -84,7 +84,10 @@ class TournamentController:
         self.view.show_message(f"Joueur {player.full_name()} ajouté au tournoi.")
 
     def list_tournament_players(self, tournament):
-        players_sorted = Player.sort_alphabetically(tournament.players)
+        # charger les objets Player depuis les IDs
+        players = [Player.load_by_id(pid) for pid in tournament.player_ids]
+        players = [p for p in players if p is not None]
+        players_sorted = Player.sort_alphabetically(players)
         self.view.show_players(players_sorted)
 
     def create_next_round(self, tournament):
@@ -97,24 +100,37 @@ class TournamentController:
             self.view.show_message("Tournoi déjà terminé.")
 
     def list_rounds_and_matches(self, tournament):
-        for r in tournament.rounds:
+        # charger les objets Round depuis les IDs
+        rounds = [Round.load_by_id(rid) for rid in tournament.round_ids]
+        rounds = [r for r in rounds if r is not None]
+        for r in rounds:
             self.view.show_round_summary(r)
-            for i, m in enumerate(r.matches):
-                self.view.show_match_detail(i+1, m)
+            for i, m in enumerate(r.match_ids):
+                match = __import__('models.match').match.Match.load_by_id(m)
+                if match:
+                    self.view.show_match_detail(i+1, match)
 
     def generate_report(self, tournament):
         """
         Génère un rapport complet du tournoi et l'enregistre dans data/reports.json
         """
         import json
+
+        # charger les joueurs et rounds depuis les IDs
+        players = [Player.load_by_id(pid) for pid in tournament.player_ids]
+        players = [p.to_dict() for p in players if p]
+
+        rounds = [Round.load_by_id(rid) for rid in tournament.round_ids]
+        rounds = [r.to_dict() for r in rounds if r]
+
         report = {
             "tournament": tournament.to_dict(),
-            "rounds": [r.to_dict() for r in tournament.rounds],
-            "players": [p.to_dict() for p in tournament.players]
+            "rounds": rounds,
+            "players": players
         }
         try:
-            with open("data/reports.json", "w") as f:
-                json.dump(report, f, indent=2)
+            with open("data/reports.json", "w", encoding="utf-8") as f:
+                json.dump(report, f, indent=2, ensure_ascii=False)
             self.view.show_message("Rapport généré dans data/reports.json")
         except Exception as e:
             self.view.show_message(f"Erreur lors de la génération du rapport : {e}")
