@@ -7,8 +7,45 @@
     "end_date": "2025-08-31",
     "description": "rivedoux 2025",
     "total_rounds": 4,
-    "current_round": 0,
-    "round_ids": [],
-    "players": []
+    "current_round": 3,
+    "round_ids": [
+      "d8db16a0-2145-4b40-a9ec-ba0cfa7d0055",
+      "52759d9f-d8a2-4ff3-b868-06befde697da",
+      "09aae2bf-8bf0-445d-9c99-cc2cd8b122bb"
+    ],
+    "players": [
+      {
+        "id": "866a8ffc-d122-4164-bfca-093245f5b0e1",
+        "first_name": "Marie Paule",
+        "last_name": "Langlois",
+        "birth_date": "1971-01-11",
+        "gender": "F",
+        "national_id": "AB75000"
+      },
+      {
+        "id": "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
+        "first_name": "Thibault",
+        "last_name": "Langlois",
+        "birth_date": "1998-07-28",
+        "gender": "M",
+        "national_id": "AB33000"
+      },
+      {
+        "id": "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
+        "first_name": "Emma",
+        "last_name": "Lardeux",
+        "birth_date": "200-01-12",
+        "gender": "F",
+        "national_id": "AB17000"
+      },
+      {
+        "id": "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
+        "first_name": "Michael",
+        "last_name": "Lardeux",
+        "birth_date": "1972-11-17",
+        "gender": "M",
+        "national_id": "AB17940"
+      }
+    ]
   }
 ]
