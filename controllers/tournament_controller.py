@@ -1,4 +1,5 @@
 from models.tournament import Tournament
+from models.round import Round
 from models.player import Player
 from views.tournament_view import TournamentView
 from views.round_view import RoundView
@@ -26,9 +27,6 @@ class TournamentController:
 
     def add_tournament(self):
         data = self.view.ask_tournament_data()
-        # Correction : renommer total_rounds -> number_of_rounds
-        if 'total_rounds' in data:
-            data['number_of_rounds'] = data.pop('total_rounds')
         tournament = Tournament(**data)
         tournament.save()
         self.view.show_message("Tournoi ajouté.")
@@ -44,9 +42,6 @@ class TournamentController:
             self.view.show_message("Tournoi introuvable.")
             return
         data = self.view.ask_tournament_data()
-        # Même correction pour update
-        if 'total_rounds' in data:
-            data['number_of_rounds'] = data.pop('total_rounds')
         for key, value in data.items():
             setattr(tournament, key, value)
         tournament.save()
@@ -73,6 +68,8 @@ class TournamentController:
                 self.create_next_round(tournament)
             elif choice == "4":
                 self.list_rounds_and_matches(tournament)
+            elif choice == "5":
+                self.generate_report(tournament)
             elif choice == "0":
                 break
 
@@ -94,6 +91,8 @@ class TournamentController:
         round_obj = tournament.create_next_round()
         if round_obj:
             self.view.show_message(f"Nouveau round créé : {round_obj.name}")
+            # Sauvegarde du round dans rounds.json
+            round_obj.save()
         else:
             self.view.show_message("Tournoi déjà terminé.")
 
@@ -102,3 +101,20 @@ class TournamentController:
             self.view.show_round_summary(r)
             for i, m in enumerate(r.matches):
                 self.view.show_match_detail(i+1, m)
+
+    def generate_report(self, tournament):
+        """
+        Génère un rapport complet du tournoi et l'enregistre dans data/reports.json
+        """
+        import json
+        report = {
+            "tournament": tournament.to_dict(),
+            "rounds": [r.to_dict() for r in tournament.rounds],
+            "players": [p.to_dict() for p in tournament.players]
+        }
+        try:
+            with open("data/reports.json", "w") as f:
+                json.dump(report, f, indent=2)
+            self.view.show_message("Rapport généré dans data/reports.json")
+        except Exception as e:
+            self.view.show_message(f"Erreur lors de la génération du rapport : {e}")
