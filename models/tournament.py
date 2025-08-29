@@ -1,8 +1,8 @@
 import json
 import uuid
-from datetime import datetime
 from models.round import Round
 from models.player import Player
+from models.match import Match
 
 TOURNAMENT_FILE = "data/tournaments.json"
 
@@ -35,7 +35,6 @@ class Tournament:
 
     @classmethod
     def from_dict(cls, data):
-        from models.round import Round
         rounds = []
         for r_id in data.get("rounds", []):
             round_obj = Round.load_by_id(r_id)
@@ -63,13 +62,13 @@ class Tournament:
         tournaments = Tournament.load_all()
         tournaments = [t for t in tournaments if t.id != self.id]
         tournaments.append(self)
-        with open(TOURNAMENT_FILE, "w") as f:
-            json.dump([t.to_dict() for t in tournaments], f, indent=2)
+        with open(TOURNAMENT_FILE, "w", encoding="utf-8") as f:
+            json.dump([t.to_dict() for t in tournaments], f, indent=2, ensure_ascii=False)
 
     @classmethod
     def load_all(cls):
         try:
-            with open(TOURNAMENT_FILE) as f:
+            with open(TOURNAMENT_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
             return [cls.from_dict(t) for t in data]
         except FileNotFoundError:
@@ -85,8 +84,8 @@ class Tournament:
     @classmethod
     def delete(cls, tournament_id):
         tournaments = [t for t in cls.load_all() if t.id != tournament_id]
-        with open(TOURNAMENT_FILE, "w") as f:
-            json.dump([t.to_dict() for t in tournaments], f, indent=2)
+        with open(TOURNAMENT_FILE, "w", encoding="utf-8") as f:
+            json.dump([t.to_dict() for t in tournaments], f, indent=2, ensure_ascii=False)
 
     def add_player(self, player):
         if player.id not in [p.id for p in self.players]:
@@ -115,7 +114,8 @@ class Tournament:
                 if p2.id not in used:
                     opponent = p2
                     break
-            pairings.append(__import__('models.match').match.Match(p1, opponent))
+            match = Match(player1_id=p1.id, player2_id=opponent.id if opponent else None)
+            pairings.append(match)
             used.add(p1.id)
             if opponent:
                 used.add(opponent.id)
@@ -127,18 +127,33 @@ class Tournament:
             return None
         self.current_round += 1
         round_name = f"Round {self.current_round}"
+
+        # Générer les appariements
         matches = self.generate_pairings()
-        new_round = Round(name=round_name, matches=matches)
+
+        # Sauvegarder chaque match et récupérer les IDs
+        match_ids = []
+        for m in matches:
+            m.save()
+            match_ids.append(m.id)
+
+        # Créer le round avec les IDs des matchs
+        new_round = Round(name=round_name, match_ids=match_ids)
         Round.start_round(new_round)
         new_round.save()
+
+        # Ajouter le round au tournoi et sauvegarder
         self.rounds.append(new_round)
         self.save()
+
         return new_round
 
     def get_player_points(self):
         points = {p.id: 0 for p in self.players}
         for round_obj in self.rounds:
-            for match in round_obj.matches:
-                if match.player1: points[match.player1.id] += match.score1
-                if match.player2: points[match.player2.id] += match.score2
+            for match_id in round_obj.match_ids:
+                match = Match.load_by_id(match_id)
+                if match:
+                    if match.player1_id in points: points[match.player1_id] += match.score1
+                    if match.player2_id in points: points[match.player2_id] += match.score2
         return points
