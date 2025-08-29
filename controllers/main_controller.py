@@ -1,6 +1,7 @@
 from controllers.tournament_controller import TournamentController
 from controllers.round_controller import RoundController
 from controllers.player_controller import PlayerController
+from controllers.reports_controller import ReportsController
 from views.main_view import MainView
 
 class MainController:
@@ -9,6 +10,7 @@ class MainController:
         self.tournament_controller = TournamentController(self.interface)
         self.round_controller = RoundController(self.interface)
         self.player_controller = PlayerController(self.interface)
+        self.reports_controller = ReportsController(self.interface)
 
     def run(self):
         while True:
@@ -19,5 +21,10 @@ class MainController:
                 self.round_controller.run()
             elif choice == "3":
                 self.player_controller.run()
+            elif choice == "4":
+                self.reports_controller.run()
             elif choice == "0":
+                print("À bientôt 👋")
                 break
+            else:
+                print("Choix invalide.")
