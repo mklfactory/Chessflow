@@ -16,21 +16,21 @@
           [
             [
               "866a8ffc-d122-4164-bfca-093245f5b0e1",
-              0
+              0.0
             ],
             [
               "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
-              0
+              0.0
             ]
           ],
           [
             [
               "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
-              0
+              0.0
             ],
             [
               "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
-              0
+              0.0
             ]
           ]
         ],
@@ -44,21 +44,21 @@
           [
             [
               "866a8ffc-d122-4164-bfca-093245f5b0e1",
-              0
+              0.0
             ],
             [
               "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
-              0
+              0.0
             ]
           ],
           [
             [
               "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
-              0
+              0.0
             ],
             [
               "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
-              0
+              0.0
             ]
           ]
         ],
@@ -72,21 +72,21 @@
           [
             [
               "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
-              0
+              0.0
             ],
             [
               "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
-              0
+              0.0
             ]
           ],
           [
             [
               "866a8ffc-d122-4164-bfca-093245f5b0e1",
-              0
+              0.0
             ],
             [
               "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
-              0
+              0.0
             ]
           ]
         ],
@@ -100,21 +100,21 @@
           [
             [
               "866a8ffc-d122-4164-bfca-093245f5b0e1",
-              0
+              0.0
             ],
             [
               "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
-              0
+              0.0
             ]
           ],
           [
             [
               "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
-              0
+              0.0
             ],
             [
               "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
-              0
+              0.0
             ]
           ]
         ],
@@ -165,6 +165,18 @@
     "end_date": "2025-08-05",
     "description": "LR",
     "total_rounds": 8,
+    "current_round": 0,
+    "rounds": [],
+    "players": []
+  },
+  {
+    "id": "539e84de-c03f-4740-95a0-da5de1c0a5e0",
+    "name": "riv 2025",
+    "location": "rivedoux",
+    "start_date": "2025-08-29",
+    "end_date": "2025-08-30",
+    "description": "rivedoux tounois 1",
+    "total_rounds": 4,
     "current_round": 0,
     "rounds": [],
     "players": []
