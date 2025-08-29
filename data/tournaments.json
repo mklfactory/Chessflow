@@ -15,5 +15,24 @@
       "46496226-db47-4578-ad83-a392e925491b"
     ],
     "players": []
+  },
+  {
+    "id": "6fb4a3e1-c00d-4d31-b6a2-11b1651fc7b0",
+    "name": "Test 2",
+    "location": "Rivedoux",
+    "start_date": "2025-08-29",
+    "end_date": "2025-08-30",
+    "description": "test 2",
+    "total_rounds": 4,
+    "current_round": 1,
+    "rounds": [
+      "fbdc3a60-b11b-4570-b6c5-d6bde4fa79c2"
+    ],
+    "players": [
+      "866a8ffc-d122-4164-bfca-093245f5b0e1",
+      "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
+      "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
+      "b07298b3-e041-4ed8-8da0-abfb83eb24fe"
+    ]
   }
 ]

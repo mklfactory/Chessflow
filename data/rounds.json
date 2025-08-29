@@ -229,5 +229,33 @@
     "matches": [],
     "start_time": "2025-08-29T15:54:24.984021",
     "end_time": null
+  },
+  {
+    "id": "fbdc3a60-b11b-4570-b6c5-d6bde4fa79c2",
+    "name": "Round 1",
+    "matches": [
+      [
+        [
+          "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
+          1.0
+        ],
+        [
+          "866a8ffc-d122-4164-bfca-093245f5b0e1",
+          0.0
+        ]
+      ],
+      [
+        [
+          "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
+          1.0
+        ],
+        [
+          "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
+          0.0
+        ]
+      ]
+    ],
+    "start_time": "2025-08-29T16:14:07.206981",
+    "end_time": "2025-08-29T16:18:47.846867"
   }
 ]
