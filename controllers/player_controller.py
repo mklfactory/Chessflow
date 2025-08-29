@@ -18,6 +18,8 @@ class PlayerController:
                 self.delete_player()
             elif choice == "0":
                 break
+            else:
+                self.view.show_message("Choix invalide.")
 
     def add_player(self):
         data = self.view.ask_player_data()
