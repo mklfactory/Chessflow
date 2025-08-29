@@ -1,85 +1,87 @@
 import json
 import os
-from models.player import Player
-from models.round import Round
-
-TOURNAMENTS_FILE = "data/tournaments.json"
-REPORTS_FILE = "data/reports.json"
-
+from datetime import datetime
+from .round import Round
 
 class Tournament:
-    def __init__(self, name, location, date, number_of_rounds=4, players=None, id=None):
-        self.id = id if id else name.replace(" ", "_").lower()
+    FILE_PATH = "data/tournaments.json"
+    REPORT_PATH = "data/reports.json"
+
+    def __init__(self, name, location, date=None, players=None, rounds=None):
         self.name = name
         self.location = location
-        self.date = date
-        self.number_of_rounds = number_of_rounds
-        self.players = players if players else []
+        self.date = date or datetime.now().strftime("%Y-%m-%d")
+        self.players = players or []
+        self.rounds = rounds or []  # list of round names (references)
 
     def to_dict(self):
         return {
-            "id": self.id,
             "name": self.name,
             "location": self.location,
             "date": self.date,
-            "number_of_rounds": self.number_of_rounds,
-            "players": [p.to_dict() for p in self.players],
+            "players": self.players,
+            "rounds": self.rounds,  # only references to Round names
         }
-
-    @classmethod
-    def from_dict(cls, data):
-        players = [Player.from_dict(p) for p in data.get("players", [])]
-        return cls(
-            id=data["id"],
-            name=data["name"],
-            location=data["location"],
-            date=data["date"],
-            number_of_rounds=data.get("number_of_rounds", 4),
-            players=players
-        )
 
     def save(self):
         tournaments = Tournament.load_all()
-        tournaments = [t for t in tournaments if t.id != self.id]  # supprime doublons
+        tournaments = [t for t in tournaments if t.name != self.name]
         tournaments.append(self)
-        with open(TOURNAMENTS_FILE, "w", encoding="utf-8") as f:
-            json.dump([t.to_dict() for t in tournaments], f, indent=4, ensure_ascii=False)
+        Tournament.save_all(tournaments)
+
+    @classmethod
+    def save_all(cls, tournaments):
+        data = [t.to_dict() for t in tournaments]
+        os.makedirs(os.path.dirname(cls.FILE_PATH), exist_ok=True)
+        with open(cls.FILE_PATH, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
 
     @classmethod
     def load_all(cls):
-        if not os.path.exists(TOURNAMENTS_FILE):
+        if not os.path.exists(cls.FILE_PATH):
             return []
-        with open(TOURNAMENTS_FILE, "r", encoding="utf-8") as f:
+        with open(cls.FILE_PATH, "r", encoding="utf-8") as f:
             data = json.load(f)
-        return [cls.from_dict(d) for d in data]
+            return [
+                Tournament(
+                    name=item["name"],
+                    location=item["location"],
+                    date=item["date"],
+                    players=item.get("players", []),
+                    rounds=item.get("rounds", []),
+                )
+                for item in data
+            ]
 
-    @classmethod
-    def get_by_id(cls, tournament_id):
-        tournaments = cls.load_all()
-        for t in tournaments:
-            if t.id == tournament_id:
-                return t
-        return None
-
+    # -------- Reports ----------
     def generate_report(self):
-        """ Génère un rapport complet du tournoi avec rounds et résultats """
-        rounds = Round.load_all(tournament_id=self.id)
+        """Generate a JSON report for this tournament"""
         report = {
-            "tournament": self.to_dict(),
-            "rounds": [r.to_dict() for r in rounds],
+            "tournament": self.name,
+            "location": self.location,
+            "date": self.date,
+            "players": self.players,
+            "rounds": [],
         }
 
-        # Sauvegarde dans reports.json
-        if os.path.exists(REPORTS_FILE):
-            with open(REPORTS_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
+        all_rounds = Round.load_all()
+        for round_name in self.rounds:
+            r = next((x for x in all_rounds if x.name == round_name), None)
+            if r:
+                report["rounds"].append(r.to_dict())
+
+        # Save into reports.json
+        os.makedirs(os.path.dirname(self.REPORT_PATH), exist_ok=True)
+        if os.path.exists(self.REPORT_PATH):
+            with open(self.REPORT_PATH, "r", encoding="utf-8") as f:
+                reports = json.load(f)
         else:
-            data = []
+            reports = []
 
-        data = [r for r in data if r["tournament"]["id"] != self.id]  # supprime anciens rapports
-        data.append(report)
+        reports = [rep for rep in reports if rep["tournament"] != self.name]
+        reports.append(report)
 
-        with open(REPORTS_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+        with open(self.REPORT_PATH, "w", encoding="utf-8") as f:
+            json.dump(reports, f, indent=4, ensure_ascii=False)
 
         return report
