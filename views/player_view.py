@@ -1,5 +1,7 @@
+import re
 from rich.console import Console
 from rich.table import Table
+from models.player import Player
 
 class PlayerView:
     def __init__(self, interface):
@@ -19,7 +21,14 @@ class PlayerView:
         last_name = input("Nom : ")
         birth_date = input("Date de naissance (YYYY-MM-DD) : ")
         gender = input("Genre (M/F) : ")
-        national_id = input("Identifiant national d’échecs (ex: AB12345) : ")
+
+        # identifiant national – validation 2 lettres + 5 chiffres
+        while True:
+            national_id = input("Identifiant national d’échecs (ex: AB12345) : ").strip()
+            if Player.is_valid_national_id(national_id):
+                break
+            self.console.print("[red]Format invalide. Exemple valide : AB12345[/red]")
+
         return {
             "first_name": first_name,
             "last_name": last_name,
@@ -37,7 +46,7 @@ class PlayerView:
         table.add_column("Nom complet")
         table.add_column("ID National")
         for p in players:
-            table.add_row(p.id, p.full_name(), p.national_id)
+            table.add_row(p.id, p.full_name(), p.national_id or "-")
         self.console.print(table)
 
     def show_message(self, msg):
