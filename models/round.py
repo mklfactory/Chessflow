@@ -5,7 +5,7 @@ class Round:
     def __init__(self, id=None, name="", matches=None, start_time=None, end_time=None):
         self.id = id or str(uuid.uuid4())
         self.name = name
-        self.matches = matches or []  # liste d’objets Match
+        self.matches = matches or []  # Match object list
         self.start_time = start_time
         self.end_time = end_time
 

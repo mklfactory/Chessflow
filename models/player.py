@@ -10,7 +10,7 @@ class Player:
         self.last_name = last_name
         self.birth_date = birth_date
         self.gender = gender
-        self.national_id = national_id  # Identifiant national d’échecs (ex: AB12345)
+        self.national_id = national_id  # national chess ID (example: AB12345)
 
     def to_dict(self):
         return {

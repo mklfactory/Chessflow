@@ -17,8 +17,8 @@ class Tournament:
         self.description = description
         self.total_rounds = total_rounds
         self.current_round = current_round
-        self.rounds = rounds or []  # liste d’objets Round
-        self.players = players or []  # liste d’objets Player
+        self.rounds = rounds or []  # Round object list
+        self.players = players or []  # Player object list
 
     def to_dict(self):
         return {
