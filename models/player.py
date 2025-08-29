@@ -1,7 +1,10 @@
 import json
 import uuid
+import re
 
-DATA_FILE = "data/players.json"
+DATA_FILE = "data/players.json"   # facultatif ; on persiste aussi les joueurs dans chaque tournoi
+
+ID_PATTERN = re.compile(r"^[A-Za-z]{2}\d{5}$")
 
 class Player:
     def __init__(self, id=None, first_name="", last_name="", birth_date="", gender="", national_id=""):
@@ -10,7 +13,7 @@ class Player:
         self.last_name = last_name
         self.birth_date = birth_date
         self.gender = gender
-        self.national_id = national_id  # national chess ID (example: AB12345)
+        self.national_id = national_id  # ex: AB12345
 
     def to_dict(self):
         return {
@@ -33,6 +36,7 @@ class Player:
             national_id=data.get("national_id", ""),
         )
 
+    # --- (optionnel) persistence séparée de tous les joueurs ---
     def save(self):
         players = Player.load_all()
         players = [p for p in players if p.id != self.id]
@@ -65,8 +69,12 @@ class Player:
             json.dump([p.to_dict() for p in players], f, indent=2)
 
     def full_name(self):
-        return f"{self.last_name} {self.first_name}"
+        return f"{self.last_name} {self.first_name}".strip()
 
     @staticmethod
     def sort_alphabetically(players):
         return sorted(players, key=lambda p: (p.last_name.lower(), p.first_name.lower()))
+
+    @staticmethod
+    def is_valid_national_id(value: str) -> bool:
+        return bool(ID_PATTERN.match(value or ""))
