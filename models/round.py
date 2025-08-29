@@ -5,46 +5,42 @@ from datetime import datetime
 class Round:
     FILE_PATH = "data/rounds.json"
 
-    def __init__(self, name, matches=None, start_time=None, end_time=None):
+    def __init__(self, name, matches=None, start_date=None, end_date=None):
         self.name = name
-        self.matches = matches or []
-        self.start_time = start_time or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.end_time = end_time
+        self.matches = matches if matches else []
+        self.start_date = start_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.end_date = end_date
 
     def to_dict(self):
+        """Convert Round object to dictionary."""
         return {
             "name": self.name,
             "matches": self.matches,
-            "start_time": self.start_time,
-            "end_time": self.end_time,
+            "start_date": self.start_date,
+            "end_date": self.end_date,
         }
 
     def save(self):
-        """Save this round to rounds.json"""
-        rounds = Round.load_all()
-        rounds.append(self)
-        Round.save_all(rounds)
-
-    @classmethod
-    def save_all(cls, rounds):
-        data = [r.to_dict() for r in rounds]
-        os.makedirs(os.path.dirname(cls.FILE_PATH), exist_ok=True)
-        with open(cls.FILE_PATH, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
+        """Save the round to rounds.json."""
+        rounds = []
+        if os.path.exists(self.FILE_PATH):
+            with open(self.FILE_PATH, "r", encoding="utf-8") as f:
+                try:
+                    rounds = json.load(f)
+                except json.JSONDecodeError:
+                    rounds = []
+        rounds.append(self.to_dict())
+        with open(self.FILE_PATH, "w", encoding="utf-8") as f:
+            json.dump(rounds, f, indent=4, ensure_ascii=False)
 
     @classmethod
     def load_all(cls):
-        """Load all rounds from rounds.json"""
+        """Load all rounds from rounds.json."""
         if not os.path.exists(cls.FILE_PATH):
             return []
         with open(cls.FILE_PATH, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return [
-                Round(
-                    name=item["name"],
-                    matches=item["matches"],
-                    start_time=item["start_time"],
-                    end_time=item.get("end_time"),
-                )
-                for item in data
-            ]
+            try:
+                data = json.load(f)
+                return [Round(**r) for r in data]
+            except json.JSONDecodeError:
+                return []
