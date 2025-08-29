@@ -6,12 +6,13 @@ class RoundView:
 
     def display_round_menu(self):
         print("\n--- Gestion des rounds ---")
-        print("1. Créer un round")
+        print("1. Créer un round manuellement")
         print("2. Voir les rounds")
-        print("3. Mettre à jour les résultats d'un round")  # Nouvelle option
-        print("4. Voir le classement")  # Nouvelle option
+        print("3. Saisir les résultats manuellement")
+        print("4. Voir le classement")
         print("0. Retour")
         return input("Choisissez une option : ")
+
 
     def ask_tournament_id(self):
         return input("ID du tournoi : ")

@@ -5,11 +5,14 @@
     "location": "Rivedoux",
     "start_date": "2025-08-29",
     "end_date": "2025-08-31",
-    "description": "amateur",
+    "description": "Tounois pour amateurs",
     "total_rounds": 4,
-    "current_round": 1,
-    "round_ids": [
-      "62da569b-e85a-4644-8949-74fc1a87950c"
+    "current_round": 4,
+    "rounds": [
+      "9c0a20bb-8287-4d82-9bdb-ce71c986dd9c",
+      "a22601b1-23da-44c5-bb33-2046af44afbf",
+      "f804fe1a-6670-41c5-975f-9a8b7225e32d",
+      "46496226-db47-4578-ad83-a392e925491b"
     ],
     "players": []
   }
