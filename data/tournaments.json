@@ -177,8 +177,126 @@
     "end_date": "2025-08-30",
     "description": "rivedoux tounois 1",
     "total_rounds": 4,
-    "current_round": 0,
-    "rounds": [],
-    "players": []
+    "current_round": 3,
+    "rounds": [
+      {
+        "id": "39418787-1f2d-4b48-b5c6-eabfa423d71c",
+        "name": "Round 1",
+        "matches": [
+          [
+            [
+              "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
+              0.0
+            ],
+            [
+              "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
+              0.0
+            ]
+          ],
+          [
+            [
+              "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
+              0.0
+            ],
+            [
+              "866a8ffc-d122-4164-bfca-093245f5b0e1",
+              0.0
+            ]
+          ]
+        ],
+        "start_time": "2025-08-29T12:07:56",
+        "end_time": null
+      },
+      {
+        "id": "9bb6d168-00a8-4c19-84c1-6a2ea02f8af7",
+        "name": "Round 2",
+        "matches": [
+          [
+            [
+              "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
+              0.0
+            ],
+            [
+              "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
+              0.0
+            ]
+          ],
+          [
+            [
+              "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
+              0.0
+            ],
+            [
+              "866a8ffc-d122-4164-bfca-093245f5b0e1",
+              0.0
+            ]
+          ]
+        ],
+        "start_time": "2025-08-29T12:08:34",
+        "end_time": null
+      },
+      {
+        "id": "57cd02b2-aa1b-4038-b126-2de5ec126e21",
+        "name": "Round 3",
+        "matches": [
+          [
+            [
+              "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
+              0.0
+            ],
+            [
+              "866a8ffc-d122-4164-bfca-093245f5b0e1",
+              0.0
+            ]
+          ],
+          [
+            [
+              "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
+              0.0
+            ],
+            [
+              "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
+              0.0
+            ]
+          ]
+        ],
+        "start_time": "2025-08-29T12:08:47",
+        "end_time": null
+      }
+    ],
+    "players": [
+      {
+        "id": "866a8ffc-d122-4164-bfca-093245f5b0e1",
+        "first_name": "Marie Paule",
+        "last_name": "Langlois",
+        "birth_date": "1971-01-11",
+        "gender": "F",
+        "national_id": "AB75000"
+      },
+      {
+        "id": "4f8cc285-7edd-44ac-a3c3-bcadcdae3bf7",
+        "first_name": "Thibault",
+        "last_name": "Langlois",
+        "birth_date": "1998-07-28",
+        "gender": "M",
+        "national_id": "AB33000"
+      },
+      {
+        "id": "f1ef9df0-2619-43ae-9347-f7c73962ab1d",
+        "first_name": "Emma",
+        "last_name": "Lardeux",
+        "birth_date": "200-01-12",
+        "gender": "F",
+        "national_id": "AB17000"
+      },
+      {
+        "id": "b07298b3-e041-4ed8-8da0-abfb83eb24fe",
+        "first_name": "Michael",
+        "last_name": "Lardeux",
+        "birth_date": "1972-11-17",
+        "gender": "M",
+        "national_id": "AB17940"
+      }
+    ]
   }
 ]
