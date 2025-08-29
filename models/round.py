@@ -4,16 +4,20 @@ import os
 ROUNDS_FILE = "data/rounds.json"
 
 class Round:
-    def __init__(self, name, matches_ids=None, round_id=None):
+    def __init__(self, name, start_time=None, end_time=None, match_ids=None, round_id=None):
         self.id = round_id
         self.name = name
-        self.matches_ids = matches_ids or []
+        self.start_time = start_time
+        self.end_time = end_time
+        self.match_ids = match_ids if match_ids else []  # On stocke seulement les IDs de matchs
 
     def to_dict(self):
         return {
             "id": self.id,
             "name": self.name,
-            "matches_ids": self.matches_ids,
+            "start_time": self.start_time,
+            "end_time": self.end_time,
+            "match_ids": self.match_ids,  # pas les matchs eux-mêmes
         }
 
     def save(self):
@@ -25,7 +29,7 @@ class Round:
                 except json.JSONDecodeError:
                     rounds = []
 
-        # assign ID if new
+        # assign new ID if necessary
         if not self.id:
             self.id = len(rounds) + 1
 
