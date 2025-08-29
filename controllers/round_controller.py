@@ -1,6 +1,6 @@
+from models.round import Round
 from views.round_view import RoundView
 from models.tournament import Tournament
-from models.round import Round
 
 class RoundController:
     def __init__(self, interface):
@@ -19,38 +19,29 @@ class RoundController:
                 self.delete_round()
             elif choice == "0":
                 break
-            else:
-                self.view.show_message("Choix invalide.")
 
-    def _get_tournament_or_msg(self):
+    def create_round(self):
         tournament_id = self.view.ask_tournament_id()
         tournament = Tournament.load_by_id(tournament_id)
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
-            return None
-        return tournament
-
-    def create_round(self):
-        tournament = self._get_tournament_or_msg()
-        if not tournament:
             return
+
         round_obj = tournament.create_next_round()
         if round_obj:
-            self.view.show_message(f"Nouveau round créé : {round_obj.name}")
+            self.view.show_message(f"Round créé : {round_obj.name}")
         else:
             self.view.show_message("Tous les rounds ont déjà été créés.")
 
     def view_rounds(self):
-        tournament = self._get_tournament_or_msg()
-        if not tournament:
-            return
-        self.view.show_tournament_header(tournament)
-        for r in tournament.rounds:
-            self.view.show_round_summary(r)
+        rounds = Round.load_all()
+        self.view.show_rounds(rounds)
 
     def update_match_result(self):
-        tournament = self._get_tournament_or_msg()
+        tournament_id = self.view.ask_tournament_id()
+        tournament = Tournament.load_by_id(tournament_id)
         if not tournament:
+            self.view.show_message("Tournoi introuvable.")
             return
 
         round_id = self.view.ask_round_id()
@@ -62,26 +53,30 @@ class RoundController:
         for i, match in enumerate(round_obj.matches):
             self.view.show_match(match, i)
             score1, score2 = self.view.ask_scores()
-            # règles de points : 1/0 ou 0.5/0.5
-            if score1 not in (0, 0.5, 1) or score2 not in (0, 0.5, 1) or (score1 + score2) not in (1, 1.0):
-                self.view.show_message("Scores invalides. Utilisez (1,0), (0,1) ou (0.5,0.5).")
-                return
-            match.score1 = float(score1)
-            match.score2 = float(score2)
+            match.score1 = score1
+            match.score2 = score2
 
         Round.end_round(round_obj)
+        round_obj.save()
         tournament.save()
-        self.view.show_message("Résultats enregistrés. Round terminé.")
+        self.view.show_message("Résultats mis à jour et round terminé.")
 
     def delete_round(self):
-        tournament = self._get_tournament_or_msg()
+        tournament_id = self.view.ask_tournament_id()
+        tournament = Tournament.load_by_id(tournament_id)
         if not tournament:
+            self.view.show_message("Tournoi introuvable.")
             return
+
         round_id = self.view.ask_round_id()
-        before = len(tournament.rounds)
         tournament.rounds = [r for r in tournament.rounds if r.id != round_id]
-        if len(tournament.rounds) < before:
-            tournament.save()
-            self.view.show_message("Round supprimé.")
-        else:
-            self.view.show_message("Round introuvable.")
+        tournament.save()
+
+        # Supprimer le round de rounds.json
+        rounds = Round.load_all()
+        rounds = [r for r in rounds if r.id != round_id]
+        with open("data/rounds.json", "w") as f:
+            import json
+            json.dump([r.to_dict() for r in rounds], f, indent=2)
+
+        self.view.show_message(f"Round {round_id} supprimé.")

@@ -1,14 +1,14 @@
 [
-    {
-        "id": "1906a2f9-7874-4c41-adc6-87673b959150",
-        "name": "Rivedoux",
-        "location": "Rivedoux",
-        "start_date": "2025-08-30",
-        "end_date": "2025-08-31",
-        "number_of_rounds": 4,
-        "current_round": 0,
-        "players": [],
-        "rounds": [],
-        "description": "Rivedoux 1"
-    }
+  {
+    "id": "1906a2f9-7874-4c41-adc6-87673b959150",
+    "name": "Rivedoux",
+    "location": "Rivedoux",
+    "start_date": "2025-08-29",
+    "end_date": "2025-08-31",
+    "description": "rivedoux 2025",
+    "total_rounds": 4,
+    "current_round": 0,
+    "round_ids": [],
+    "players": []
+  }
 ]
