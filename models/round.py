@@ -1,5 +1,5 @@
-import json
 import uuid
+import json
 from datetime import datetime
 from models.match import Match
 
@@ -9,7 +9,7 @@ class Round:
     def __init__(self, id=None, name="", matches=None, start_time=None, end_time=None):
         self.id = id or str(uuid.uuid4())
         self.name = name
-        self.matches = matches or []  # List of Match objects
+        self.matches = matches or []  # Liste d’objets Match
         self.start_time = start_time
         self.end_time = end_time
 
@@ -40,8 +40,8 @@ class Round:
     @staticmethod
     def end_round(round_obj):
         round_obj.end_time = datetime.now().isoformat()
-        round_obj.save()
 
+    # Sauvegarde d’un round dans rounds.json
     def save(self):
         rounds = Round.load_all()
         rounds = [r for r in rounds if r.id != self.id]
@@ -49,18 +49,28 @@ class Round:
         with open(DATA_FILE, "w") as f:
             json.dump([r.to_dict() for r in rounds], f, indent=2)
 
+    # Lecture de tous les rounds depuis rounds.json
     @classmethod
     def load_all(cls):
         try:
-            with open(DATA_FILE) as f:
+            with open(DATA_FILE, "r") as f:
                 data = json.load(f)
             return [cls.from_dict(d) for d in data]
         except Exception:
             return []
 
+    # Chargement par ID
     @classmethod
     def load_by_id(cls, round_id):
         for r in cls.load_all():
             if r.id == round_id:
                 return r
         return None
+
+    # Suppression d’un round par ID
+    @classmethod
+    def delete(cls, round_id):
+        rounds = cls.load_all()
+        rounds = [r for r in rounds if r.id != round_id]
+        with open(DATA_FILE, "w") as f:
+            json.dump([r.to_dict() for r in rounds], f, indent=2)
