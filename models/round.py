@@ -1,57 +1,73 @@
 import json
-import os
+import uuid
+from models.match import Match
 
 ROUNDS_FILE = "data/rounds.json"
 
 class Round:
-    def __init__(self, name, start_time=None, end_time=None, match_ids=None, round_id=None):
-        self.id = round_id
+    def __init__(self, name="", match_ids=None, round_id=None):
+        self.id = round_id or str(uuid.uuid4())
         self.name = name
-        self.start_time = start_time
-        self.end_time = end_time
-        self.match_ids = match_ids if match_ids else []  # On stocke seulement les IDs de matchs
+        self.match_ids = match_ids or []
 
     def to_dict(self):
         return {
             "id": self.id,
             "name": self.name,
-            "start_time": self.start_time,
-            "end_time": self.end_time,
-            "match_ids": self.match_ids,  # pas les matchs eux-mêmes
+            "match_ids": self.match_ids,
         }
 
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            name=data.get("name", ""),
+            match_ids=data.get("match_ids", []),
+            round_id=data.get("id")
+        )
+
     def save(self):
-        rounds = []
-        if os.path.exists(ROUNDS_FILE):
-            with open(ROUNDS_FILE, "r", encoding="utf-8") as f:
-                try:
-                    rounds = json.load(f)
-                except json.JSONDecodeError:
-                    rounds = []
-
-        # assign new ID if necessary
-        if not self.id:
-            self.id = len(rounds) + 1
-
-        # update or append
-        updated = False
-        for i, r in enumerate(rounds):
-            if r["id"] == self.id:
-                rounds[i] = self.to_dict()
-                updated = True
-                break
-        if not updated:
-            rounds.append(self.to_dict())
-
+        rounds = Round.load_all()
+        rounds = [r for r in rounds if r.id != self.id]
+        rounds.append(self)
         with open(ROUNDS_FILE, "w", encoding="utf-8") as f:
-            json.dump(rounds, f, indent=4, ensure_ascii=False)
+            json.dump([r.to_dict() for r in rounds], f, indent=2, ensure_ascii=False)
 
     @staticmethod
     def load_all():
-        if not os.path.exists(ROUNDS_FILE):
+        try:
+            with open(ROUNDS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return [Round.from_dict(d) for d in data]
+        except FileNotFoundError:
             return []
-        with open(ROUNDS_FILE, "r", encoding="utf-8") as f:
-            try:
-                return json.load(f)
-            except json.JSONDecodeError:
-                return []
+        except json.JSONDecodeError:
+            return []
+
+    @staticmethod
+    def load_by_id(round_id):
+        for r in Round.load_all():
+            if r.id == round_id:
+                return r
+        return None
+
+    @staticmethod
+    def start_round(round_obj):
+        # Placeholder pour le début du round
+        # On peut ajouter ici un timestamp ou autre
+        pass
+
+    def update_match_result(self, match_id, score1, score2):
+        if match_id in self.match_ids:
+            match = Match.load_by_id(match_id)
+            if match:
+                match.score1 = score1
+                match.score2 = score2
+                match.save()
+
+    def get_matches(self):
+        matches = []
+        for m_id in self.match_ids:
+            match = Match.load_by_id(m_id)
+            if match:
+                matches.append(match)
+        return matches
