@@ -21,13 +21,7 @@ class Match:
         }
 
     def save(self):
-        matches = []
-        if os.path.exists(MATCHES_FILE):
-            with open(MATCHES_FILE, "r", encoding="utf-8") as f:
-                try:
-                    matches = json.load(f)
-                except json.JSONDecodeError:
-                    matches = []
+        matches = Match.load_all()
 
         # assign new ID if necessary
         if not self.id:
@@ -55,3 +49,17 @@ class Match:
                 return json.load(f)
             except json.JSONDecodeError:
                 return []
+
+    @staticmethod
+    def load_by_id(match_id):
+        matches = Match.load_all()
+        for m in matches:
+            if m["id"] == match_id:
+                return Match(
+                    player1_id=m["player1_id"],
+                    player2_id=m["player2_id"],
+                    score1=m.get("score1", 0.0),
+                    score2=m.get("score2", 0.0),
+                    match_id=m["id"]
+                )
+        return None
