@@ -14,9 +14,9 @@ class RoundController:
             elif choice == "2":
                 self.view_rounds()
             elif choice == "3":
-                self.update_round_results()  # Nouvelle fonctionnalité
+                self.update_match_result()
             elif choice == "4":
-                self.show_round_ranking()   # Nouvelle fonctionnalité
+                self.show_standings()
             elif choice == "0":
                 break
 
@@ -37,7 +37,7 @@ class RoundController:
         rounds = Round.load_all()
         self.view.show_rounds(rounds)
 
-    def update_round_results(self):
+    def update_match_result(self):
         tournament_id = self.view.ask_tournament_id()
         tournament = Tournament.load_by_id(tournament_id)
         if not tournament:
@@ -60,7 +60,7 @@ class RoundController:
         tournament.save()
         self.view.show_message("Résultats mis à jour et round terminé.")
 
-    def show_round_ranking(self):
+    def show_standings(self):
         tournament_id = self.view.ask_tournament_id()
         tournament = Tournament.load_by_id(tournament_id)
         if not tournament:
@@ -68,9 +68,4 @@ class RoundController:
             return
 
         points = tournament.get_player_points()
-        ranking = sorted(points.items(), key=lambda x: x[1], reverse=True)
-        print("\nClassement du tournoi :")
-        for i, (player_id, score) in enumerate(ranking, 1):
-            player = next((p for p in tournament.players if p.id == player_id), None)
-            if player:
-                print(f"{i}. {player.full_name()} - {score} points")
+        self.view.show_standings(points)
