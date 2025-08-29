@@ -1,5 +1,3 @@
-from models.match import Match
-
 class RoundView:
     def __init__(self, interface):
         pass
@@ -13,7 +11,6 @@ class RoundView:
         print("0. Retour")
         return input("Choisissez une option : ")
 
-
     def ask_tournament_id(self):
         return input("ID du tournoi : ")
 
@@ -22,7 +19,7 @@ class RoundView:
 
     def show_rounds(self, rounds):
         for r in rounds:
-            print(f"{r.id} - {r.name} - Début: {r.start_time or 'non démarré'} - Fin: {r.end_time or 'non terminé'}")
+            print(f"{r.id} - {r.name} - Début: {r.start_time} - Fin: {r.end_time}")
 
     def show_match(self, match, index):
         p1 = match.player1.full_name() if match.player1 else "Bye"
@@ -33,6 +30,12 @@ class RoundView:
         score1 = float(input("Score joueur 1 : "))
         score2 = float(input("Score joueur 2 : "))
         return score1, score2
+
+    def show_standings(self, points):
+        print("\nClassement actuel :")
+        sorted_points = sorted(points.items(), key=lambda x: x[1], reverse=True)
+        for player_id, score in sorted_points:
+            print(f"{player_id} : {score} points")
 
     def show_message(self, msg):
         print(f"[INFO] {msg}")
