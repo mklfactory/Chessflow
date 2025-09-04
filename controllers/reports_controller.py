@@ -2,7 +2,6 @@ from models.tournament import Tournament
 from models.player import Player
 from views.reports_view import ReportsView
 
-
 class ReportsController:
     def __init__(self, interface):
         self.view = ReportsView(interface)
@@ -36,8 +35,7 @@ class ReportsController:
         if not t:
             self.view.show_message("Tournoi introuvable.")
             return
-        players = [Player.load_by_id(pid) for pid in t.player_ids]
-        players = [p for p in players if p]
+        players = [Player.load_by_id(pid) for pid in t.player_ids if Player.load_by_id(pid)]
         players_sorted = Player.sort_alphabetically(players)
         self.view.show_players(players_sorted)
 
@@ -47,7 +45,7 @@ class ReportsController:
         if not t:
             self.view.show_message("Tournoi introuvable.")
             return
-        for r in t.get_rounds():
+        for r in t.rounds:
             self.view.show_round_summary(r)
-            for i, m in enumerate(r.get_matches()):
+            for i, m in enumerate(r.matches):
                 self.view.show_match_detail(i + 1, m)

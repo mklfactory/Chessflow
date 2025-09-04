@@ -2,9 +2,6 @@ class TournamentView:
     def __init__(self, interface):
         self.interface = interface
 
-    # ---------------------------
-    # Menus
-    # ---------------------------
     def display_menu(self):
         print("\n--- Gestion des tournois ---")
         print("1. Ajouter un tournoi")
@@ -25,21 +22,19 @@ class TournamentView:
         print("0. Retour")
         return input("Votre choix : ")
 
-    # ---------------------------
-    # Affichage de tournois
-    # ---------------------------
     def show_tournaments(self, tournaments):
         if not tournaments:
             print("Aucun tournoi trouvé.")
         else:
             for t in tournaments:
-                print(f"[{t.id}] {t.name} - {t.location} ({t.date})")
+                print(f"[{t.id}] {t.name} - {t.location} ({t.start_date} - {t.end_date})")
 
     def ask_tournament_data(self):
         return {
             "name": input("Nom du tournoi : "),
             "location": input("Lieu : "),
-            "date": input("Date (YYYY-MM-DD) : "),
+            "start_date": input("Date de début (YYYY-MM-DD) : "),
+            "end_date": input("Date de fin (YYYY-MM-DD) : "),
             "time_control": input("Contrôle du temps : "),
             "description": input("Description : "),
         }
@@ -47,22 +42,16 @@ class TournamentView:
     def ask_tournament_id(self):
         return input("ID du tournoi : ")
 
-    # ---------------------------
-    # Affichage de joueurs
-    # ---------------------------
     def show_players(self, players):
         if not players:
             print("Aucun joueur inscrit dans ce tournoi.")
         else:
             for p in players:
-                print(f"[{p.id}] {p.full_name()} ({p.ranking})")
+                print(f"[{p.id}] {p.full_name()} ({p.national_id})")
 
     def ask_player_id(self):
         return input("ID du joueur : ")
 
-    # ---------------------------
-    # Affichage de rounds et matchs
-    # ---------------------------
     def show_round_summary(self, round_obj):
         print(f"\n{round_obj.name} - Début : {round_obj.start_time or '—'} | Fin : {round_obj.end_time or '—'}")
 
@@ -72,8 +61,5 @@ class TournamentView:
         p2_name = p2.full_name() if p2 else "Bye"
         print(f"  Match {match_number}: {p1_name} ({match.score1}) vs {p2_name} ({match.score2})")
 
-    # ---------------------------
-    # Messages généraux
-    # ---------------------------
     def show_message(self, message):
         print(message)

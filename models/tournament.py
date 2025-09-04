@@ -14,6 +14,7 @@ class Tournament:
         location="",
         start_date="",
         end_date="",
+        time_control="",
         description="",
         total_rounds=4,
         current_round=0,
@@ -25,15 +26,12 @@ class Tournament:
         self.location = location
         self.start_date = start_date
         self.end_date = end_date
+        self.time_control = time_control
         self.description = description
         self.total_rounds = total_rounds
         self.current_round = current_round
-        self.round_ids = round_ids or []   # IDs des rounds
-        self.player_ids = player_ids or [] # IDs des joueurs
-
-    # ---------------------------
-    # Conversion dict <-> objet
-    # ---------------------------
+        self.round_ids = round_ids or []
+        self.player_ids = player_ids or []
 
     def to_dict(self):
         return {
@@ -42,6 +40,7 @@ class Tournament:
             "location": self.location,
             "start_date": self.start_date,
             "end_date": self.end_date,
+            "time_control": self.time_control,
             "description": self.description,
             "total_rounds": self.total_rounds,
             "current_round": self.current_round,
@@ -57,16 +56,13 @@ class Tournament:
             location=data.get("location", ""),
             start_date=data.get("start_date", ""),
             end_date=data.get("end_date", ""),
+            time_control=data.get("time_control", ""),
             description=data.get("description", ""),
             total_rounds=data.get("total_rounds", 4),
             current_round=data.get("current_round", 0),
             round_ids=data.get("round_ids", []),
             player_ids=data.get("player_ids", [])
         )
-
-    # ---------------------------
-    # Gestion des joueurs
-    # ---------------------------
 
     @property
     def players(self):
@@ -77,10 +73,6 @@ class Tournament:
             self.player_ids.append(player.id)
             self.save()
 
-    # ---------------------------
-    # Gestion des rounds
-    # ---------------------------
-
     @property
     def rounds(self):
         return [Round.load_by_id(rid) for rid in self.round_ids if Round.load_by_id(rid)]
@@ -90,21 +82,14 @@ class Tournament:
             return None
         self.current_round += 1
         round_name = f"Round {self.current_round}"
-
         matches = self.generate_pairings()
         new_round = Round(name=round_name)
         new_round.save()
-
         for match in matches:
             new_round.add_match(match)
-
         self.round_ids.append(new_round.id)
         self.save()
         return new_round
-
-    # ---------------------------
-    # Génération des appariements
-    # ---------------------------
 
     def generate_pairings(self):
         import random
@@ -115,7 +100,6 @@ class Tournament:
             points = self.get_player_points()
             players = self.players[:]
             players.sort(key=lambda p: (points[p.id], random.random()), reverse=True)
-
         pairings = []
         used = set()
         i = 0
@@ -139,10 +123,6 @@ class Tournament:
             i += 1
         return pairings
 
-    # ---------------------------
-    # Points des joueurs
-    # ---------------------------
-
     def get_player_points(self):
         points = {p.id: 0 for p in self.players}
         for r in self.rounds:
@@ -150,10 +130,6 @@ class Tournament:
                 if m.player1_id: points[m.player1_id] += m.score1
                 if m.player2_id: points[m.player2_id] += m.score2
         return points
-
-    # ---------------------------
-    # Sauvegarde / chargement
-    # ---------------------------
 
     def save(self):
         tournaments = Tournament.load_all()

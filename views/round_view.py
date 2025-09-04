@@ -22,9 +22,10 @@ class RoundView:
             print(f"{r.id} - {r.name} - Début: {r.start_time} - Fin: {r.end_time}")
 
     def show_match(self, match, index):
-        p1 = match.player1.full_name() if match.player1 else "Bye"
-        p2 = match.player2.full_name() if match.player2 else "Bye"
-        print(f"Match {index+1}: {p1} vs {p2} (Scores actuels : {match.score1} - {match.score2})")
+        p1, p2 = match.get_players()
+        p1_name = p1.full_name() if p1 else "Bye"
+        p2_name = p2.full_name() if p2 else "Bye"
+        print(f"Match {index+1}: {p1_name} vs {p2_name} (Scores actuels : {match.score1} - {match.score2})")
 
     def ask_scores(self):
         score1 = float(input("Score joueur 1 : "))
@@ -33,7 +34,7 @@ class RoundView:
 
     def show_standings(self, points):
         print("\nClassement actuel :")
-        sorted_points = sorted(points.items(), key=lambda x: x[1], reverse=True)
+        sorted_points = sorted(points.items(), key=lambda x: x[11], reverse=True)
         for player_id, score in sorted_points:
             print(f"{player_id} : {score} points")
 

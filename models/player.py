@@ -2,8 +2,7 @@ import json
 import uuid
 import re
 
-DATA_FILE = "data/players.json"   # facultatif ; on persiste aussi les joueurs dans chaque tournoi
-
+DATA_FILE = "data/players.json"
 ID_PATTERN = re.compile(r"^[A-Za-z]{2}\d{5}$")
 
 class Player:
@@ -13,7 +12,7 @@ class Player:
         self.last_name = last_name
         self.birth_date = birth_date
         self.gender = gender
-        self.national_id = national_id  # ex: AB12345
+        self.national_id = national_id
 
     def to_dict(self):
         return {
@@ -33,10 +32,9 @@ class Player:
             last_name=data.get("last_name", ""),
             birth_date=data.get("birth_date", ""),
             gender=data.get("gender", ""),
-            national_id=data.get("national_id", ""),
+            national_id=data.get("national_id", "")
         )
 
-    # --- (optionnel) persistence séparée de tous les joueurs ---
     def save(self):
         players = Player.load_all()
         players = [p for p in players if p.id != self.id]

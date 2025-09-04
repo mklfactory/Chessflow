@@ -26,7 +26,6 @@ class RoundController:
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
             return
-
         round_obj = tournament.create_next_round()
         if round_obj:
             self.view.show_message(f"Round créé : {round_obj.name}")
@@ -43,20 +42,18 @@ class RoundController:
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
             return
-
         round_id = self.view.ask_round_id()
         round_obj = next((r for r in tournament.rounds if r.id == round_id), None)
         if not round_obj:
             self.view.show_message("Round introuvable.")
             return
-
         for i, match in enumerate(round_obj.matches):
             self.view.show_match(match, i)
             score1, score2 = self.view.ask_scores()
             match.score1 = score1
             match.score2 = score2
-
-        Round.end_round(round_obj)
+            match.save()
+        round_obj.end_round()
         tournament.save()
         self.view.show_message("Résultats mis à jour et round terminé.")
 
@@ -66,6 +63,5 @@ class RoundController:
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
             return
-
         points = tournament.get_player_points()
         self.view.show_standings(points)

@@ -21,14 +21,11 @@ class PlayerView:
         last_name = input("Nom : ")
         birth_date = input("Date de naissance (YYYY-MM-DD) : ")
         gender = input("Genre (M/F) : ")
-
-        # identifiant national – validation 2 lettres + 5 chiffres
         while True:
             national_id = input("Identifiant national d’échecs (ex: AB12345) : ").strip()
             if Player.is_valid_national_id(national_id):
                 break
             self.console.print("[red]Format invalide. Exemple valide : AB12345[/red]")
-
         return {
             "first_name": first_name,
             "last_name": last_name,

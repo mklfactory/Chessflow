@@ -4,7 +4,6 @@ from models.player import Player
 from views.tournament_view import TournamentView
 from views.round_view import RoundView
 
-
 class TournamentController:
     def __init__(self, interface):
         self.view = TournamentView(interface)
@@ -85,8 +84,7 @@ class TournamentController:
         self.view.show_message(f"Joueur {player.full_name()} ajouté au tournoi.")
 
     def list_tournament_players(self, tournament):
-        players = [Player.load_by_id(pid) for pid in tournament.player_ids]
-        players = [p for p in players if p]  # nettoie les None
+        players = [Player.load_by_id(pid) for pid in tournament.player_ids if Player.load_by_id(pid)]
         players_sorted = Player.sort_alphabetically(players)
         self.view.show_players(players_sorted)
 
@@ -94,25 +92,22 @@ class TournamentController:
         round_obj = tournament.create_next_round()
         if round_obj:
             self.view.show_message(f"Nouveau round créé : {round_obj.name}")
-            round_obj.save()  # Sauvegarde du round dans rounds.json
+            round_obj.save()
         else:
             self.view.show_message("Tournoi déjà terminé.")
 
     def list_rounds_and_matches(self, tournament):
-        for r in tournament.get_rounds():
+        for r in tournament.rounds:
             self.view.show_round_summary(r)
-            for i, m in enumerate(r.get_matches()):
+            for i, m in enumerate(r.matches):
                 self.view.show_match_detail(i + 1, m)
 
     def generate_report(self, tournament):
-        """
-        Génère un rapport complet du tournoi et l'enregistre dans data/reports.json
-        """
         import json
         report = {
             "tournament": tournament.to_dict(),
-            "rounds": [r.to_dict() for r in tournament.get_rounds()],
-            "players": [p.to_dict() for p in [Player.load_by_id(pid) for pid in tournament.player_ids] if p]
+            "rounds": [r.to_dict() for r in tournament.rounds],
+            "players": [p.to_dict() for p in [Player.load_by_id(pid) for pid in tournament.player_ids if Player.load_by_id(pid)]]
         }
         try:
             with open("data/reports.json", "w") as f:

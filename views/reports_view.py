@@ -28,7 +28,7 @@ class ReportsView:
 
     def show_round_summary(self, round_obj):
         self.interface.print(
-            f"{round_obj.name} - Début : {round_obj.start_date or '—'} | Fin : {round_obj.end_date or '—'}"
+            f"{round_obj.name} - Début : {round_obj.start_time or '—'} | Fin : {round_obj.end_time or '—'}"
         )
 
     def show_match_detail(self, index, match):
