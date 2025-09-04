@@ -1,3 +1,5 @@
+from models.player import Player
+
 class RoundView:
     def __init__(self, interface):
         pass
@@ -36,7 +38,11 @@ class RoundView:
         print("\nClassement actuel :")
         sorted_points = sorted(points.items(), key=lambda x: x[1], reverse=True)
         for player_id, score in sorted_points:
-            print(f"{player_id} : {score} points")
+            player = Player.load_by_id(player_id)
+            if player:
+                print(f"{player.full_name()} : {score} points")
+            else:
+                print(f"{player_id} : {score} points (joueur introuvable)")
 
     def show_message(self, msg):
         print(f"[INFO] {msg}")

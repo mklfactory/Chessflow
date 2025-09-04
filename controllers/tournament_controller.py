@@ -89,12 +89,15 @@ class TournamentController:
         self.view.show_players(players_sorted)
 
     def create_next_round(self, tournament):
+        if tournament.current_round >= tournament.total_rounds:
+            self.view.show_message("Tournoi déjà terminé.")
+            return
         round_obj = tournament.create_next_round()
         if round_obj:
             self.view.show_message(f"Nouveau round créé : {round_obj.name}")
             round_obj.save()
         else:
-            self.view.show_message("Tournoi déjà terminé.")
+            self.view.show_message("Impossible de créer un nouveau round.")
 
     def list_rounds_and_matches(self, tournament):
         for r in tournament.rounds:

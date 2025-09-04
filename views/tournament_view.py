@@ -36,6 +36,7 @@ class TournamentView:
             "start_date": input("Date de début (YYYY-MM-DD) : "),
             "end_date": input("Date de fin (YYYY-MM-DD) : "),
             "time_control": input("Contrôle du temps : "),
+            "total_rounds": int(input("Nombre maximal de rounds : ")),  # <-- ajout
             "description": input("Description : "),
         }
 
