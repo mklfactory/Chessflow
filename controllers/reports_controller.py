@@ -1,6 +1,6 @@
 from models.tournament import Tournament
 from models.player import Player
-from views.report_view import ReportView
+from views.reports_view import ReportView
 
 class ReportController:
     def __init__(self, interface):
