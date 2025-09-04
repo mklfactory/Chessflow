@@ -4,6 +4,7 @@ from models.player import Player
 from views.tournament_view import TournamentView
 from views.round_view import RoundView
 
+
 class TournamentController:
     def __init__(self, interface):
         self.view = TournamentView(interface)
@@ -84,9 +85,8 @@ class TournamentController:
         self.view.show_message(f"Joueur {player.full_name()} ajouté au tournoi.")
 
     def list_tournament_players(self, tournament):
-        # charger les objets Player depuis les IDs
         players = [Player.load_by_id(pid) for pid in tournament.player_ids]
-        players = [p for p in players if p is not None]
+        players = [p for p in players if p]  # nettoie les None
         players_sorted = Player.sort_alphabetically(players)
         self.view.show_players(players_sorted)
 
@@ -94,43 +94,29 @@ class TournamentController:
         round_obj = tournament.create_next_round()
         if round_obj:
             self.view.show_message(f"Nouveau round créé : {round_obj.name}")
-            # Sauvegarde du round dans rounds.json
-            round_obj.save()
+            round_obj.save()  # Sauvegarde du round dans rounds.json
         else:
             self.view.show_message("Tournoi déjà terminé.")
 
     def list_rounds_and_matches(self, tournament):
-        # charger les objets Round depuis les IDs
-        rounds = [Round.load_by_id(rid) for rid in tournament.round_ids]
-        rounds = [r for r in rounds if r is not None]
-        for r in rounds:
+        for r in tournament.get_rounds():
             self.view.show_round_summary(r)
-            for i, m in enumerate(r.match_ids):
-                match = __import__('models.match').match.Match.load_by_id(m)
-                if match:
-                    self.view.show_match_detail(i+1, match)
+            for i, m in enumerate(r.get_matches()):
+                self.view.show_match_detail(i + 1, m)
 
     def generate_report(self, tournament):
         """
         Génère un rapport complet du tournoi et l'enregistre dans data/reports.json
         """
         import json
-
-        # charger les joueurs et rounds depuis les IDs
-        players = [Player.load_by_id(pid) for pid in tournament.player_ids]
-        players = [p.to_dict() for p in players if p]
-
-        rounds = [Round.load_by_id(rid) for rid in tournament.round_ids]
-        rounds = [r.to_dict() for r in rounds if r]
-
         report = {
             "tournament": tournament.to_dict(),
-            "rounds": rounds,
-            "players": players
+            "rounds": [r.to_dict() for r in tournament.get_rounds()],
+            "players": [p.to_dict() for p in [Player.load_by_id(pid) for pid in tournament.player_ids] if p]
         }
         try:
-            with open("data/reports.json", "w", encoding="utf-8") as f:
-                json.dump(report, f, indent=2, ensure_ascii=False)
+            with open("data/reports.json", "w") as f:
+                json.dump(report, f, indent=2)
             self.view.show_message("Rapport généré dans data/reports.json")
         except Exception as e:
             self.view.show_message(f"Erreur lors de la génération du rapport : {e}")
