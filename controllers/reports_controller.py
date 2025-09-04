@@ -1,51 +1,51 @@
 from models.tournament import Tournament
 from models.player import Player
-from views.reports_view import ReportsView
+from views.report_view import ReportView
+from tabulate import tabulate
 
-class ReportsController:
+class ReportController:
     def __init__(self, interface):
-        self.view = ReportsView(interface)
+        self.view = ReportView(interface)
 
     def run(self):
         while True:
-            choice = self.view.display_menu()
+            choice = self.view.display_report_menu()
             if choice == "1":
-                self.all_players_alpha()
+                self.list_all_players()
             elif choice == "2":
-                self.all_tournaments()
+                self.list_all_tournaments()
             elif choice == "3":
-                self.tournament_players_alpha()
+                self.list_players_for_tournament()
             elif choice == "4":
-                self.tournament_rounds_and_matches()
+                self.show_rounds_and_matches()
             elif choice == "0":
                 break
 
-    def all_players_alpha(self):
+    def list_all_players(self):
         players = Player.load_all()
-        players_sorted = Player.sort_alphabetically(players)
-        self.view.show_players(players_sorted)
+        players_sorted = sorted(players, key=lambda p: (p.last_name, p.first_name))
+        self.view.show_players_list(players_sorted)
 
-    def all_tournaments(self):
+    def list_all_tournaments(self):
         tournaments = Tournament.load_all()
-        self.view.show_tournaments(tournaments)
+        self.view.show_tournament_list(tournaments)
 
-    def tournament_players_alpha(self):
-        tournament_id = self.view.ask_tournament_id()
-        t = Tournament.load_by_id(tournament_id)
-        if not t:
+    def list_players_for_tournament(self):
+        tournament_id = self.view.ask_tournament_selection()
+        tournament = Tournament.load_by_id(tournament_id)
+        if not tournament:
             self.view.show_message("Tournoi introuvable.")
             return
-        players = [Player.load_by_id(pid) for pid in t.player_ids if Player.load_by_id(pid)]
-        players_sorted = Player.sort_alphabetically(players)
-        self.view.show_players(players_sorted)
+        players = [Player.load_by_id(pid) for pid in tournament.player_ids]
+        players_sorted = sorted(players, key=lambda p: (p.last_name, p.first_name))
+        self.view.show_players_list(players_sorted)
 
-    def tournament_rounds_and_matches(self):
-        tournament_id = self.view.ask_tournament_id()
-        t = Tournament.load_by_id(tournament_id)
-        if not t:
+    def show_rounds_and_matches(self):
+        tournament_id = self.view.ask_tournament_selection()
+        tournament = Tournament.load_by_id(tournament_id)
+        if not tournament:
             self.view.show_message("Tournoi introuvable.")
             return
-        for r in t.rounds:
-            self.view.show_round_summary(r)
-            for i, m in enumerate(r.matches):
-                self.view.show_match_detail(i + 1, m)
+        self.view.show_rounds(tournament.rounds, tournament.name)
+        for round_obj in tournament.rounds:
+            self.view.show_matches(round_obj.matches, round_obj.name)

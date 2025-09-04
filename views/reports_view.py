@@ -1,46 +1,49 @@
-class ReportsView:
-    def __init__(self, interface=None):
-        # interface is ignored here because we are using print/input direct
+from tabulate import tabulate
+
+class ReportView:
+    def __init__(self, interface):
         pass
 
-    def display_menu(self):
+    def display_report_menu(self):
+        menu = [
+            ["1", "Liste de tous les joueurs (alphabétique)"],
+            ["2", "Liste de tous les tournois"],
+            ["3", "Joueurs d’un tournoi (alphabétique)"],
+            ["4", "Rounds et matchs d’un tournoi"],
+            ["0", "Retour"]
+        ]
         print("\n--- Rapports ---")
-        print("1. Liste de tous les joueurs (alphabétique)")
-        print("2. Liste de tous les tournois")
-        print("3. Joueurs d’un tournoi (alphabétique)")
-        print("4. Rounds et matchs d’un tournoi")
-        print("0. Retour")
+        print(tabulate(menu, headers=["Option", "Description"], tablefmt="fancy_grid"))
         return input("Votre choix : ")
 
-    def ask_tournament_id(self):
-        return input("ID du tournoi : ")
+    def show_players_list(self, players):
+        table = [[p.id, f"{p.last_name} {p.first_name}", p.birth_date] for p in players]
+        print("Liste des joueurs :")
+        print(tabulate(table, headers=["ID", "Nom", "Date de naissance"], tablefmt="fancy_grid"))
 
-    def show_players(self, players):
-        if not players:
-            print("Aucun joueur trouvé.")
-        else:
-            for p in players:
-                print(f"{p.id} - {p.full_name()} ({p.birth_date})")
+    def show_tournament_list(self, tournaments):
+        table = [[t.id, t.name] for t in tournaments]
+        print("Liste des tournois :")
+        print(tabulate(table, headers=["ID", "Nom"], tablefmt="fancy_grid"))
 
-    def show_tournaments(self, tournaments):
-        if not tournaments:
-            print("Aucun tournoi trouvé.")
-        else:
-            for t in tournaments:
-                print(f"{t.id} - {t.name} ({t.location})")
+    def ask_tournament_selection(self):
+        tournament_id = input("Sélectionnez l'ID du tournoi : ")
+        return tournament_id
 
-    def show_round_summary(self, round_obj):
-        print(
-            f"{round_obj.name} - Début : {round_obj.start_time or '—'} | Fin : {round_obj.end_time or '—'}"
-        )
+    def show_rounds(self, rounds, tournament_name=None):
+        title = "Rounds"
+        if tournament_name:
+            title += f" du tournoi {tournament_name}"
+        print(title)
+        table = [[r.id, r.name, r.start_time or "", r.end_time or ""] for r in rounds]
+        print(tabulate(table, headers=["ID", "Nom", "Début", "Fin"], tablefmt="fancy_grid"))
 
-    def show_match_detail(self, index, match):
-        from models.player import Player
-        p1 = Player.load_by_id(match.player1_id) if match.player1_id else None
-        p2 = Player.load_by_id(match.player2_id) if match.player2_id else None
-        name1 = p1.full_name() if p1 else "Bye"
-        name2 = p2.full_name() if p2 else "Bye"
-        print(f"  Match {index}: {name1} ({match.score1}) vs {name2} ({match.score2})")
+    def show_matches(self, matches, round_name):
+        print(f"Matchs du {round_name} :")
+        table = []
+        for m in matches:
+            table.append([m.player1_id, m.player2_id, m.score1, m.score2])
+        print(tabulate(table, headers=["Joueur 1", "Joueur 2", "Score 1", "Score 2"], tablefmt="fancy_grid"))
 
-    def show_message(self, message):
-        print(message)
+    def show_message(self, msg):
+        print(f"[INFO] {msg}")
