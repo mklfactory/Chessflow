@@ -1,5 +1,6 @@
 from models.tournament import Tournament
 from views.round_view import RoundView
+from tabulate import tabulate
 from datetime import datetime
 
 class RoundController:
@@ -8,9 +9,9 @@ class RoundController:
 
     def ask_tournament_selection(self):
         tournaments = Tournament.load_all()
+        table = [[t.id, t.name] for t in tournaments]
         print("Liste des tournois disponibles :")
-        for t in tournaments:
-            print(f"{t.id} - {t.name}")
+        print(tabulate(table, headers=["ID du tournoi", "Nom"], tablefmt="fancy_grid"))
         tournament_id = input("Sélectionnez l'ID du tournoi : ")
         return tournament_id
 
@@ -34,11 +35,9 @@ class RoundController:
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
             return
-
         if tournament.current_round >= tournament.total_rounds:
             self.view.show_message("Tous les rounds ont déjà été créés.")
             return
-
         round_obj = tournament.create_next_round()
         if round_obj:
             round_obj.save()
@@ -64,21 +63,18 @@ class RoundController:
         if not tournament.rounds:
             self.view.show_message("Aucun round dans ce tournoi.")
             return
-
         self.view.show_rounds(tournament.rounds, tournament.name)
         round_id = self.view.ask_round_id()
         round_obj = next((r for r in tournament.rounds if r.id == round_id), None)
         if not round_obj:
             self.view.show_message("Round introuvable.")
             return
-
         for i, match in enumerate(round_obj.matches):
             self.view.show_match(match, i)
             score1, score2 = self.view.ask_scores()
             match.score1 = score1
             match.score2 = score2
             match.save()
-
         round_obj.end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         round_obj.save()
         self.view.show_message(f"Résultats du {round_obj.name} mis à jour.")

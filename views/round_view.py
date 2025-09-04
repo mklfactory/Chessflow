@@ -6,16 +6,24 @@ class RoundView:
         pass
 
     def display_round_menu(self):
+        menu = [
+            ["1", "Créer un round manuellement"],
+            ["2", "Voir les rounds"],
+            ["3", "Saisir les résultats manuellement"],
+            ["4", "Voir le classement"],
+            ["0", "Retour"]
+        ]
         print("\n--- Gestion des rounds ---")
-        print("1. Créer un round manuellement")
-        print("2. Voir les rounds")
-        print("3. Saisir les résultats manuellement")
-        print("4. Voir le classement")
-        print("0. Retour")
+        print(tabulate(menu, headers=["Option", "Description"], tablefmt="fancy_grid"))
         return input("Choisissez une option : ")
 
     def ask_round_id(self):
         return input("ID du round : ")
+
+    def show_tournament_list(self, tournaments):
+        table = [[t.id, t.name] for t in tournaments]
+        print("Liste des tournois disponibles :")
+        print(tabulate(table, headers=["ID du tournoi", "Nom"], tablefmt="fancy_grid"))
 
     def show_rounds(self, rounds, tournament_name=None):
         title = "--- Gestion des rounds ---"
