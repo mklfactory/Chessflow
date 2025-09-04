@@ -1,57 +1,43 @@
-from rich.console import Console
-from rich.table import Table
-
 class ReportsView:
     def __init__(self, interface):
-        self.console = Console()
+        self.interface = interface
 
     def display_menu(self):
-        self.console.print("\n[bold yellow]--- Rapports ---[/bold yellow]")
-        self.console.print("1. Liste de tous les joueurs (A→Z)")
-        self.console.print("2. Liste de tous les tournois")
-        self.console.print("3. Infos d’un tournoi (nom & dates)")
-        self.console.print("4. Joueurs d’un tournoi (A→Z)")
-        self.console.print("5. Rounds & matchs d’un tournoi")
-        self.console.print("0. Retour")
-        return input("Votre choix : ")
+        self.interface.print("\n--- Rapports ---")
+        self.interface.print("1. Liste de tous les joueurs (alphabétique)")
+        self.interface.print("2. Liste de tous les tournois")
+        self.interface.print("3. Joueurs d’un tournoi (alphabétique)")
+        self.interface.print("4. Rounds et matchs d’un tournoi")
+        self.interface.print("0. Retour")
+        return self.interface.input("Votre choix : ")
 
     def ask_tournament_id(self):
-        return input("ID du tournoi : ")
+        return self.interface.input("ID du tournoi : ")
 
     def show_players(self, players):
-        table = Table(title="Joueurs")
-        table.add_column("ID", style="dim", width=36)
-        table.add_column("Nom complet")
-        table.add_column("ID National")
+        if not players:
+            self.interface.print("Aucun joueur trouvé.")
         for p in players:
-            table.add_row(p.id, p.full_name(), p.national_id or "-")
-        self.console.print(table)
+            self.interface.print(f"{p.id} - {p.full_name()} ({p.birth_date})")
 
     def show_tournaments(self, tournaments):
-        table = Table(title="Tournois")
-        table.add_column("ID", style="dim", width=36)
-        table.add_column("Nom")
-        table.add_column("Lieu")
-        table.add_column("Début")
-        table.add_column("Fin")
+        if not tournaments:
+            self.interface.print("Aucun tournoi trouvé.")
         for t in tournaments:
-            table.add_row(t.id, t.name, t.location, t.start_date, t.end_date)
-        self.console.print(table)
-
-    def show_tournament_info(self, t):
-        self.console.print(f"[bold]Tournoi[/bold] : {t.name}")
-        self.console.print(f"Lieu : {t.location}")
-        self.console.print(f"Dates : {t.start_date} → {t.end_date}")
-        self.console.print(f"Tours : {t.current_round}/{t.total_rounds}")
-        self.console.print(f"Description : {t.description or '—'}")
+            self.interface.print(f"{t.id} - {t.name} ({t.location})")
 
     def show_round_summary(self, round_obj):
-        self.console.print(f"[bold blue]{round_obj.name}[/bold blue] - Début : {round_obj.start_time or '—'} | Fin : {round_obj.end_time or '—'}")
+        self.interface.print(
+            f"{round_obj.name} - Début : {round_obj.start_date or '—'} | Fin : {round_obj.end_date or '—'}"
+        )
 
     def show_match_detail(self, index, match):
-        p1 = match.player1.full_name() if match.player1 else "Bye"
-        p2 = match.player2.full_name() if match.player2 else "Bye"
-        self.console.print(f"  • Match {index} : {p1} ({match.score1}) vs {p2} ({match.score2})")
+        from models.player import Player
+        p1 = Player.load_by_id(match.player1_id) if match.player1_id else None
+        p2 = Player.load_by_id(match.player2_id) if match.player2_id else None
+        name1 = p1.full_name() if p1 else "Bye"
+        name2 = p2.full_name() if p2 else "Bye"
+        self.interface.print(f"  Match {index}: {name1} ({match.score1}) vs {name2} ({match.score2})")
 
-    def show_message(self, msg):
-        self.console.print(f"[green]{msg}[/green]")
+    def show_message(self, message):
+        self.interface.print(message)
