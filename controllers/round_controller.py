@@ -2,7 +2,6 @@ from models.tournament import Tournament
 from views.round_view import RoundView
 from tabulate import tabulate
 from datetime import datetime
-
 class RoundController:
     def __init__(self, interface):
         self.view = RoundView(interface)
