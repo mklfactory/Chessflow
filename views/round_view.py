@@ -33,10 +33,10 @@ class RoundView:
         return score1, score2
 
     def show_standings(self, points):
-        print("\nClassement actuel :")
-        sorted_points = sorted(points.items(), key=lambda x: x[11], reverse=True)
-        for player_id, score in sorted_points:
-            print(f"{player_id} : {score} points")
+    print("\nClassement actuel :")
+    sorted_points = sorted(points.items(), key=lambda x: x[1], reverse=True)
+    for player_id, score in sorted_points:
+        print(f"{player_id} : {score} points")
 
     def show_message(self, msg):
         print(f"[INFO] {msg}")
