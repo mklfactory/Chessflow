@@ -1,7 +1,6 @@
 from models.tournament import Tournament
 from models.player import Player
 from views.report_view import ReportView
-from tabulate import tabulate
 
 class ReportController:
     def __init__(self, interface):
@@ -46,6 +45,4 @@ class ReportController:
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
             return
-        self.view.show_rounds(tournament.rounds, tournament.name)
-        for round_obj in tournament.rounds:
-            self.view.show_matches(round_obj.matches, round_obj.name)
+        self.view.show_rounds_and_matches(tournament.rounds, tournament.name)

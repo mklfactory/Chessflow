@@ -1,4 +1,5 @@
 from tabulate import tabulate
+from models.player import Player
 
 class ReportView:
     def __init__(self, interface):
@@ -27,23 +28,21 @@ class ReportView:
         print(tabulate(table, headers=["ID", "Nom"], tablefmt="fancy_grid"))
 
     def ask_tournament_selection(self):
-        tournament_id = input("Sélectionnez l'ID du tournoi : ")
+        tournament_id = input("ID du tournoi : ")
         return tournament_id
 
-    def show_rounds(self, rounds, tournament_name=None):
-        title = "Rounds"
-        if tournament_name:
-            title += f" du tournoi {tournament_name}"
-        print(title)
-        table = [[r.id, r.name, r.start_time or "", r.end_time or ""] for r in rounds]
-        print(tabulate(table, headers=["ID", "Nom", "Début", "Fin"], tablefmt="fancy_grid"))
-
-    def show_matches(self, matches, round_name):
-        print(f"Matchs du {round_name} :")
-        table = []
-        for m in matches:
-            table.append([m.player1_id, m.player2_id, m.score1, m.score2])
-        print(tabulate(table, headers=["Joueur 1", "Joueur 2", "Score 1", "Score 2"], tablefmt="fancy_grid"))
+    def show_rounds_and_matches(self, rounds, tournament_name=None):
+        print(f"\nRounds et matchs du tournoi : {tournament_name}")
+        for r in rounds:
+            print(f"\n{r.name} - Début : {r.start_time or '—'} | Fin : {r.end_time or '—'}")
+            table = []
+            for i, match in enumerate(r.matches, 1):
+                p1 = Player.load_by_id(match.player1_id)
+                p2 = Player.load_by_id(match.player2_id)
+                name1 = p1.full_name() if p1 else "Bye"
+                name2 = p2.full_name() if p2 else "Bye"
+                table.append([f"Match {i}", f"{name1} ({match.score1})", f"{name2} ({match.score2})"])
+            print(tabulate(table, headers=["Match", "Joueur 1 (Score)", "Joueur 2 (Score)"], tablefmt="fancy_grid"))
 
     def show_message(self, msg):
         print(f"[INFO] {msg}")
