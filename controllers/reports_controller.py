@@ -2,7 +2,7 @@ from models.tournament import Tournament
 from models.player import Player
 from views.reports_view import ReportView
 
-class ReportController:
+class ReportsController:
     def __init__(self, interface):
         self.view = ReportView(interface)
 
