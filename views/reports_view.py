@@ -1,6 +1,6 @@
 class ReportsView:
     def __init__(self, interface=None):
-        # interface est ignoré ici car on utilise print/input direct
+        # interface is ignored here because we are using print/input direct
         pass
 
     def display_menu(self):
