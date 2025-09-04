@@ -1,4 +1,5 @@
 from models.player import Player
+from tabulate import tabulate
 
 class RoundView:
     def __init__(self, interface):
@@ -21,15 +22,16 @@ class RoundView:
         if tournament_name:
             title += f" (Tournoi : {tournament_name})"
         print(title)
-        for r in rounds:
-            print(f"{r.id} - {r.name} - Début: {r.start_time} - Fin: {r.end_time}")
+        headers = ["ID", "Nom", "Début", "Fin"]
+        data = [[r.id, r.name, r.start_time or "", r.end_time or ""] for r in rounds]
+        print(tabulate(data, headers=headers, tablefmt="fancy_grid"))
 
     def show_match(self, match, index):
         p1 = Player.load_by_id(match.player1_id)
         p2 = Player.load_by_id(match.player2_id)
         name1 = p1.full_name() if p1 else "Bye"
         name2 = p2.full_name() if p2 else "Bye"
-        print(f"Match {index+1}: {name1} vs {name2} (Scores actuels: {match.score1} - {match.score2})")
+        print(f"Match {index + 1}: {name1} vs {name2} (Scores actuels : {match.score1} - {match.score2})")
 
     def ask_scores(self):
         while True:
@@ -44,14 +46,14 @@ class RoundView:
                 print("Entrée invalide, veuillez entrer un nombre.")
 
     def show_standings(self, points):
-        print("\nClassement actuel :")
-        sorted_points = sorted(points.items(), key=lambda x: x[1], reverse=True)
-        for player_id, score in sorted_points:
+        headers = ["Joueur", "Points"]
+        data = []
+        for player_id, score in sorted(points.items(), key=lambda x: x[1], reverse=True):
             player = Player.load_by_id(player_id)
-            if player:
-                print(f"{player.full_name()} : {score} points")
-            else:
-                print(f"{player_id} : {score} points (joueur introuvable)")
+            name = player.full_name() if player else player_id
+            data.append([name, score])
+        print("\nClassement actuel :")
+        print(tabulate(data, headers=headers, tablefmt="fancy_grid"))
 
     def show_message(self, msg):
         print(f"[INFO] {msg}")
