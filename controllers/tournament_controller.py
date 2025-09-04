@@ -9,6 +9,14 @@ class TournamentController:
         self.view = TournamentView(interface)
         self.round_view = RoundView(interface)
 
+    def ask_tournament_selection(self):
+        tournaments = Tournament.load_all()
+        print("Liste des tournois disponibles :")
+        for t in tournaments:
+            print(f"{t.id} - {t.name}")
+        tournament_id = input("Sélectionnez l'ID du tournoi : ")
+        return tournament_id
+
     def run(self):
         while True:
             choice = self.view.display_menu()
@@ -36,7 +44,7 @@ class TournamentController:
         self.view.show_tournaments(tournaments)
 
     def update_tournament(self):
-        tournament_id = self.view.ask_tournament_id()
+        tournament_id = self.ask_tournament_selection()
         tournament = Tournament.load_by_id(tournament_id)
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
@@ -48,12 +56,12 @@ class TournamentController:
         self.view.show_message("Tournoi mis à jour.")
 
     def delete_tournament(self):
-        tournament_id = self.view.ask_tournament_id()
+        tournament_id = self.ask_tournament_selection()
         Tournament.delete(tournament_id)
         self.view.show_message("Tournoi supprimé.")
 
     def manage_tournament(self):
-        tournament_id = self.view.ask_tournament_id()
+        tournament_id = self.ask_tournament_selection()
         tournament = Tournament.load_by_id(tournament_id)
         if not tournament:
             self.view.show_message("Tournoi introuvable.")
