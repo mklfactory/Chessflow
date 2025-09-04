@@ -2,72 +2,78 @@ class TournamentView:
     def __init__(self, interface):
         self.interface = interface
 
+    # ---------------------------
+    # Menus
+    # ---------------------------
     def display_menu(self):
-        self.interface.print("\n--- Gestion des tournois ---")
-        self.interface.print("1. Ajouter un tournoi")
-        self.interface.print("2. Lister les tournois")
-        self.interface.print("3. Modifier un tournoi")
-        self.interface.print("4. Supprimer un tournoi")
-        self.interface.print("5. Gérer un tournoi (joueurs, rounds, matchs, rapports)")
-        self.interface.print("0. Retour")
-        return self.interface.input("Votre choix : ")
+        print("\n--- Gestion des tournois ---")
+        print("1. Ajouter un tournoi")
+        print("2. Lister les tournois")
+        print("3. Modifier un tournoi")
+        print("4. Supprimer un tournoi")
+        print("5. Gérer un tournoi (joueurs, rounds, matchs, rapports)")
+        print("0. Retour")
+        return input("Votre choix : ")
+
+    def display_manage_menu(self):
+        print("\n--- Gestion détaillée du tournoi ---")
+        print("1. Ajouter un joueur au tournoi")
+        print("2. Lister les joueurs du tournoi")
+        print("3. Créer un nouveau round")
+        print("4. Afficher les rounds et matchs")
+        print("5. Rapports du tournoi")
+        print("0. Retour")
+        return input("Votre choix : ")
+
+    # ---------------------------
+    # Affichage de tournois
+    # ---------------------------
+    def show_tournaments(self, tournaments):
+        if not tournaments:
+            print("Aucun tournoi trouvé.")
+        else:
+            for t in tournaments:
+                print(f"[{t.id}] {t.name} - {t.location} ({t.date})")
 
     def ask_tournament_data(self):
-        name = self.interface.input("Nom du tournoi : ")
-        location = self.interface.input("Lieu : ")
-        start_date = self.interface.input("Date de début : ")
-        end_date = self.interface.input("Date de fin : ")
-        description = self.interface.input("Description : ")
-        total_rounds = int(self.interface.input("Nombre total de rounds : "))
         return {
-            "name": name,
-            "location": location,
-            "start_date": start_date,
-            "end_date": end_date,
-            "description": description,
-            "total_rounds": total_rounds
+            "name": input("Nom du tournoi : "),
+            "location": input("Lieu : "),
+            "date": input("Date (YYYY-MM-DD) : "),
+            "time_control": input("Contrôle du temps : "),
+            "description": input("Description : "),
         }
 
     def ask_tournament_id(self):
-        return self.interface.input("ID du tournoi : ")
+        return input("ID du tournoi : ")
 
-    def show_tournaments(self, tournaments):
-        if not tournaments:
-            self.interface.print("Aucun tournoi trouvé.")
-        for t in tournaments:
-            self.interface.print(f"{t.id} - {t.name} ({t.location}) du {t.start_date} au {t.end_date}")
-
-    def display_manage_menu(self):
-        self.interface.print("\n--- Gestion détaillée du tournoi ---")
-        self.interface.print("1. Ajouter un joueur au tournoi")
-        self.interface.print("2. Lister les joueurs du tournoi")
-        self.interface.print("3. Créer un nouveau round")
-        self.interface.print("4. Afficher les rounds et matchs")
-        self.interface.print("5. Rapports du tournoi")
-        self.interface.print("0. Retour")
-        return self.interface.input("Votre choix : ")
-
-    def ask_player_id(self):
-        return self.interface.input("ID du joueur : ")
-
+    # ---------------------------
+    # Affichage de joueurs
+    # ---------------------------
     def show_players(self, players):
         if not players:
-            self.interface.print("Aucun joueur trouvé.")
-        for p in players:
-            self.interface.print(f"{p.id} - {p.full_name()} ({p.birth_date})")
+            print("Aucun joueur inscrit dans ce tournoi.")
+        else:
+            for p in players:
+                print(f"[{p.id}] {p.full_name()} ({p.ranking})")
 
+    def ask_player_id(self):
+        return input("ID du joueur : ")
+
+    # ---------------------------
+    # Affichage de rounds et matchs
+    # ---------------------------
     def show_round_summary(self, round_obj):
-        self.interface.print(
-            f"{round_obj.name} - Début : {round_obj.start_date or '—'} | Fin : {round_obj.end_date or '—'}"
-        )
+        print(f"\n{round_obj.name} - Début : {round_obj.start_time or '—'} | Fin : {round_obj.end_time or '—'}")
 
-    def show_match_detail(self, index, match):
-        from models.player import Player
-        p1 = Player.load_by_id(match.player1_id) if match.player1_id else None
-        p2 = Player.load_by_id(match.player2_id) if match.player2_id else None
-        name1 = p1.full_name() if p1 else "Bye"
-        name2 = p2.full_name() if p2 else "Bye"
-        self.interface.print(f"  Match {index}: {name1} ({match.score1}) vs {name2} ({match.score2})")
+    def show_match_detail(self, match_number, match):
+        p1, p2 = match.get_players()
+        p1_name = p1.full_name() if p1 else "Bye"
+        p2_name = p2.full_name() if p2 else "Bye"
+        print(f"  Match {match_number}: {p1_name} ({match.score1}) vs {p2_name} ({match.score2})")
 
+    # ---------------------------
+    # Messages généraux
+    # ---------------------------
     def show_message(self, message):
-        self.interface.print(message)
+        print(message)
