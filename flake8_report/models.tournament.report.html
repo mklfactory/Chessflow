@@ -33,7 +33,7 @@ window.addEventListener('DOMContentLoaded', function () {
 </script>
    </head>
    <body>
-      <div id="masthead" class="sev-1"></div>
+      <div id="masthead" class="sev-2"></div>
       <div id="page">
          <p id="srclink">
             <a title="View full annotated source"
@@ -50,18 +50,23 @@ window.addEventListener('DOMContentLoaded', function () {
          <ul id="index">
          
          <li>
-            <a data-code="F401">
-               <span class="count sev-1">
-                  1
+            <a data-code="E701">
+               <span class="count sev-2">
+                  2
                </span>
-               <strong>F401:</strong> 'models.round.Round' imported but unused
+               <strong>E701:</strong> multiple statements on one line (colon)
                
             </a>
             <ul class="details">
             <li>
                
-               <a href="models.tournament.source.html#l2">
-                  <tt><i>2</i> <span class="kn">from</span><span class="w"> </span><span class="nn">models.round</span><span class="w"> </span><span class="kn">import</span> <span class="n">Round</span></tt>
+               <a href="models.tournament.source.html#l130">
+                  <tt><i>130</i>                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">player1_id</span><span class="p">:</span> <span class="n">points</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">player1_id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">m</span><span class="o">.</span><span class="n">score1</span></tt>
+               </a>
+            </li><li>
+               
+               <a href="models.tournament.source.html#l131">
+                  <tt><i>131</i>                 <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">player2_id</span><span class="p">:</span> <span class="n">points</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">player2_id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">m</span><span class="o">.</span><span class="n">score2</span></tt>
                </a>
             </li>
             </ul>
@@ -78,8 +83,8 @@ window.addEventListener('DOMContentLoaded', function () {
             <ul class="details">
             <li>
                
-               <a href="models.tournament.source.html#l4">
-                  <tt><i>4</i> <span class="k">class</span><span class="w"> </span><span class="nc">Tournament</span><span class="p">:</span></tt>
+               <a href="models.tournament.source.html#l9">
+                  <tt><i>9</i> <span class="k">class</span><span class="w"> </span><span class="nc">Tournament</span><span class="p">:</span></tt>
                </a>
             </li>
             </ul>
