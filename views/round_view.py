@@ -29,7 +29,7 @@ class RoundView:
         p2 = Player.load_by_id(match.player2_id)
         name1 = p1.full_name() if p1 else "Bye"
         name2 = p2.full_name() if p2 else "Bye"
-        print(f"Match {index+1}: {name1} vs {name2} (Scores actuels : {match.score1} - {match.score2})")
+        print(f"Match {index+1}: {name1} vs {name2} (Scores actuels: {match.score1} - {match.score2})")
 
     def ask_scores(self):
         while True:

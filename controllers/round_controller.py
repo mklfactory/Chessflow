@@ -96,6 +96,8 @@ class RoundController:
         points = {pid: 0.0 for pid in tournament.player_ids}
         for round_obj in tournament.rounds:
             for match in round_obj.matches:
-                points[match.player1_id] += match.score1
-                points[match.player2_id] += match.score2
+                if match.player1_id is not None:
+                    points[match.player1_id] += match.score1
+                if match.player2_id is not None:
+                    points[match.player2_id] += match.score2
         return points
