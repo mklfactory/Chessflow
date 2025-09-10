@@ -4,6 +4,7 @@
 # Contenu du fichier .flake8 :
 [flake8]
 max-line-length = 119
-exclude = __pycache__, data/, flake8_report/
+exclude = __pycache__, data/, flake8_report/, .venv/, venv/, env/, .git/, .idea/, .vscode/
+# Pour générer un rapport HTML
 format = html
 htmldir = flake8_report
