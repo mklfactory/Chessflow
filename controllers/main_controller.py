@@ -39,4 +39,3 @@ class MainController:
             else:
                 # Handle invalid choices
                 print("Choix invalide.")
-                

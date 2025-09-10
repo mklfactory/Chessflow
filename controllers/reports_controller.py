@@ -5,11 +5,11 @@ from views.reports_view import ReportView
 
 
 class ReportsController:
- 
+
     def __init__(self, interface):
         # Initialize the ReportView with the main interface
         self.view = ReportView(interface)
-    
+ 
     def run(self):
         # Main loop for managing reports
         while True:
@@ -26,7 +26,7 @@ class ReportsController:
             elif choice == "0":
                 # Exit the report management menu
                 break
-       
+     
     def list_all_players(self):
         # Load all players from the database or storage
         players = Player.load_all()
@@ -34,13 +34,13 @@ class ReportsController:
         players_sorted = sorted(players, key=lambda p: (p.last_name, p.first_name))
         # Display the sorted list of players
         self.view.show_players_list(players_sorted)
-     
+   
     def list_all_tournaments(self):
         # Load all tournaments from the database or storage
         tournaments = Tournament.load_all()
         # Display the list of tournaments
         self.view.show_tournament_list(tournaments)
-      
+   
     def list_players_for_tournament(self):
         # Ask the user to select a tournament by ID
         tournament_id = self.view.ask_tournament_selection()
@@ -56,7 +56,7 @@ class ReportsController:
         players_sorted = sorted(players, key=lambda p: (p.last_name, p.first_name))
         # Display the sorted list of players
         self.view.show_players_list(players_sorted)
-     
+
     def show_rounds_and_matches(self):
         # Ask the user to select a tournament by ID
         tournament_id = self.view.ask_tournament_selection()
