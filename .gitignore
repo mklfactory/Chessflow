@@ -7,3 +7,5 @@ __pycache__/
 data/*.log
 data/*.json
 html
+.bat
+.sh
