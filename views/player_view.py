@@ -2,7 +2,6 @@ import re
 from rich.console import Console
 from rich.table import Table
 from models.player import Player
-
 class PlayerView:
     def __init__(self, interface):
         self.console = Console()
