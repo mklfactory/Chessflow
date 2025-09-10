@@ -164,7 +164,11 @@ class TournamentController:
         report = {
             "tournament": tournament.to_dict(),
             "rounds": [r.to_dict() for r in tournament.rounds],
-            "players": [p.to_dict() for p in [Player.load_by_id(pid) for pid in tournament.player_ids if Player.load_by_id(pid)]]
+            "players": [p.to_dict()
+                        for p in [
+                            Player.load_by_id(pid)
+                            for pid in tournament.player_ids
+                            if Player.load_by_id(pid)]]
         }
         try:
             # Save the report to a JSON file
