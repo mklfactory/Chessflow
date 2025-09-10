@@ -5,7 +5,6 @@ from datetime import datetime
 from models.match import Match
 
 ROUNDS_FILE = "data/rounds.json"
-
 class Round:
     def __init__(self, name, round_id=None, match_ids=None, start_time=None, end_time=None):
         self.id = round_id or str(uuid.uuid4())
