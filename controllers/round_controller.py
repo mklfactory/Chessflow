@@ -7,7 +7,6 @@ class RoundController:
     def __init__(self, interface):
         # Initialize the RoundView with the main interface
         self.view = RoundView(interface)
-
     def ask_tournament_selection(self):
         # Load all tournaments from the database or storage
         tournaments = Tournament.load_all()
@@ -18,7 +17,6 @@ class RoundController:
         # Ask the user to select a tournament by ID
         tournament_id = input("Sélectionnez l'ID du tournoi : ")
         return tournament_id
-
     def run(self):
         # Main loop for managing rounds
         while True:
@@ -35,7 +33,6 @@ class RoundController:
             elif choice == "0":
                 # Exit the round management menu
                 break
-
     def create_manual_round(self):
         # Ask the user to select a tournament
         tournament_id = self.ask_tournament_selection()
@@ -58,7 +55,6 @@ class RoundController:
         else:
             # Notify the user if the round could not be created
             self.view.show_message("Impossible de créer un nouveau round.")
-
     def show_rounds(self):
         # Ask the user to select a tournament
         tournament_id = self.ask_tournament_selection()
@@ -69,7 +65,6 @@ class RoundController:
             return
         # Display all rounds for the selected tournament
         self.view.show_rounds(tournament.rounds, tournament.name)
-
     def enter_results_manually(self):
         # Ask the user to select a tournament
         tournament_id = self.ask_tournament_selection()
@@ -102,7 +97,6 @@ class RoundController:
         round_obj.end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         round_obj.save()
         self.view.show_message(f"Résultats du {round_obj.name} mis à jour.")
-
     def show_standings(self):
         # Ask the user to select a tournament
         tournament_id = self.ask_tournament_selection()
@@ -115,7 +109,6 @@ class RoundController:
         points = self.calculate_points(tournament)
         # Display the standings
         self.view.show_standings(points)
-
     def calculate_points(self, tournament):
         # Initialize a dictionary to store points for each player
         points = {pid: 0.0 for pid in tournament.player_ids}
