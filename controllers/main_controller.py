@@ -22,7 +22,7 @@ class MainController:
         # Main application loop
         while True:
             # Display the main menu and get the user's choice
-            choice = self.interface.display_main_menu()  
+            choice = self.interface.display_main_menu()
             # Handle the user's choice by delegating to the appropriate controller
             if choice == "1":
                 self.tournament_controller.run()  # Manage tournaments
@@ -39,3 +39,4 @@ class MainController:
             else:
                 # Handle invalid choices
                 print("Choix invalide.")
+                

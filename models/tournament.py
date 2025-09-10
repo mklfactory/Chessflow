@@ -128,9 +128,9 @@ class Tournament:
         points = {p.id: 0 for p in self.players}
         for r in self.rounds:
             for m in r.matches:
-                if m.player1_id: 
+                if m.player1_id:
                     points[m.player1_id] += m.score1
-                if m.player2_id: 
+                if m.player2_id:
                     points[m.player2_id] += m.score2
         return points
 
