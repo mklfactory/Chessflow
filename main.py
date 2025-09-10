@@ -5,10 +5,8 @@ from controllers.main_controller import MainController
 def main():
     # Debug message to indicate the application is starting
     print("[DEBUG] Starting ChessFlow Console App...")
-    
     # Creating an instance of the MainController class
     app = MainController()
-    
     # Calling the run method of the MainController instance to start the application
     app.run()
 
