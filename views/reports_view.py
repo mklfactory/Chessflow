@@ -1,5 +1,7 @@
 from tabulate import tabulate
 from models.player import Player
+
+
 class ReportView:
     def __init__(self, interface):
         pass

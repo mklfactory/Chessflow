@@ -2,6 +2,8 @@
 from controllers.main_controller import MainController
 
 # The main function serves as the entry point for the application
+
+
 def main():
     # Debug message to indicate the application is starting
     print("[DEBUG] Starting ChessFlow Console App...")

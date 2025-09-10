@@ -6,6 +6,8 @@ from models.match import Match
 
 TOURNAMENT_FILE = "data/tournaments.json"
 
+
+
 class Tournament:
     def __init__(
         self,

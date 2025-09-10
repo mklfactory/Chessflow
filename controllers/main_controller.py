@@ -7,6 +7,8 @@ from controllers.reports_controller import ReportsController
 # Importing the view for the main interface
 from views.main_view import MainView
 
+
+
 class MainController:
     def __init__(self):
         # Initialize the main interface view

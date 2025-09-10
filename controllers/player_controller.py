@@ -1,6 +1,8 @@
 # Importing the Player model and the PlayerView for managing players
 from models.player import Player
 from views.player_view import PlayerView
+
+
 class PlayerController:
     def __init__(self, interface):
         # Initialize the PlayerView with the main interface

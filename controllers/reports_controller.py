@@ -3,6 +3,8 @@ from models.tournament import Tournament
 from models.player import Player
 from views.reports_view import ReportView
 
+
+
 class ReportsController:
     def __init__(self, interface):
         # Initialize the ReportView with the main interface

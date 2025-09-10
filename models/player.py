@@ -4,6 +4,8 @@ import re
 
 DATA_FILE = "data/players.json"
 ID_PATTERN = re.compile(r"^[A-Za-z]{2}\d{5}$")
+
+
 class Player:
     def __init__(self, id=None, first_name="", last_name="", birth_date="", gender="", national_id=""):
         self.id = id or str(uuid.uuid4())
