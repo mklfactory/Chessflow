@@ -5,7 +5,6 @@ from models.player import Player
 
 DATA_DIR = "data"
 MATCHES_FILE = os.path.join(DATA_DIR, "matches.json")
-
 class Match:
     def __init__(self, player1_id, player2_id=None, score1=0.0, score2=0.0, id=None):
         self.id = id or str(uuid.uuid4())
