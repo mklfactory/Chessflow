@@ -1,6 +1,5 @@
 from models.player import Player
 from tabulate import tabulate
-
 class RoundView:
     def __init__(self, interface):
         pass
