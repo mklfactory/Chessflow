@@ -524,46 +524,49 @@
                class="code sev- "><tt><i>166</i>             <span class="s2">&quot;rounds&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">tournament</span><span class="o">.</span><span class="n">rounds</span><span class="p">],</span></tt>
             </div>
             <div id="l167"
-               class="code sev-2  le">
-               <ul class="violations">
-               
-                  <li>
-                     <span class="count sev-2">
-                        E501
-                     </span>
-                     Line too long (129 > 119 characters)</li>
-               
-               </ul><tt><i>167</i>             <span class="s2">&quot;players&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Player</span><span class="o">.</span><span class="n">load_by_id</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">tournament</span><span class="o">.</span><span class="n">player_ids</span> <span class="k">if</span> <span class="n">Player</span><span class="o">.</span><span class="n">load_by_id</span><span class="p">(</span><span class="n">pid</span><span class="p">)]]</span></tt>
+               class="code sev- "><tt><i>167</i>             <span class="s2">&quot;players&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span></tt>
             </div>
             <div id="l168"
-               class="code sev- "><tt><i>168</i>         <span class="p">}</span></tt>
+               class="code sev- "><tt><i>168</i>                         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span></tt>
             </div>
             <div id="l169"
-               class="code sev- "><tt><i>169</i>         <span class="k">try</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>169</i>                             <span class="n">Player</span><span class="o">.</span><span class="n">load_by_id</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span></tt>
             </div>
             <div id="l170"
-               class="code sev- "><tt><i>170</i>             <span class="c1"># Save the report to a JSON file</span></tt>
+               class="code sev- "><tt><i>170</i>                             <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">tournament</span><span class="o">.</span><span class="n">player_ids</span></tt>
             </div>
             <div id="l171"
-               class="code sev- "><tt><i>171</i>             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;data/reports.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>171</i>                             <span class="k">if</span> <span class="n">Player</span><span class="o">.</span><span class="n">load_by_id</span><span class="p">(</span><span class="n">pid</span><span class="p">)]]</span></tt>
             </div>
             <div id="l172"
-               class="code sev- "><tt><i>172</i>                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>172</i>         <span class="p">}</span></tt>
             </div>
             <div id="l173"
-               class="code sev- "><tt><i>173</i>             <span class="c1"># Notify the user that the report was generated</span></tt>
+               class="code sev- "><tt><i>173</i>         <span class="k">try</span><span class="p">:</span></tt>
             </div>
             <div id="l174"
-               class="code sev- "><tt><i>174</i>             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;Rapport généré dans data/reports.json&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>174</i>             <span class="c1"># Save the report to a JSON file</span></tt>
             </div>
             <div id="l175"
-               class="code sev- "><tt><i>175</i>         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span></tt>
+               class="code sev- "><tt><i>175</i>             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;data/reports.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span></tt>
             </div>
             <div id="l176"
-               class="code sev- "><tt><i>176</i>             <span class="c1"># Notify the user if an error occurred during report generation</span></tt>
+               class="code sev- "><tt><i>176</i>                 <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></tt>
             </div>
             <div id="l177"
-               class="code sev- "><tt><i>177</i>             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Erreur lors de la génération du rapport : </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
+               class="code sev- "><tt><i>177</i>             <span class="c1"># Notify the user that the report was generated</span></tt>
+            </div>
+            <div id="l178"
+               class="code sev- "><tt><i>178</i>             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="s2">&quot;Rapport généré dans data/reports.json&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l179"
+               class="code sev- "><tt><i>179</i>         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span></tt>
+            </div>
+            <div id="l180"
+               class="code sev- "><tt><i>180</i>             <span class="c1"># Notify the user if an error occurred during report generation</span></tt>
+            </div>
+            <div id="l181"
+               class="code sev- "><tt><i>181</i>             <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">show_message</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Erreur lors de la génération du rapport : </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></tt>
             </div>
             
          </div>

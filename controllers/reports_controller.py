@@ -26,7 +26,7 @@ class ReportsController:
             elif choice == "0":
                 # Exit the report management menu
                 break
- 
+
     def list_all_players(self):
         # Load all players from the database or storage
         players = Player.load_all()
