@@ -8,11 +8,10 @@ from controllers.reports_controller import ReportsController
 from views.main_view import MainView
 
 
-
 class MainController:
     def __init__(self):
         # Initialize the main interface view
-        self.interface = MainView()  
+        self.interface = MainView()
         # Initialize controllers for tournaments, rounds, players, and reports
         self.tournament_controller = TournamentController(self.interface)
         self.round_controller = RoundController(self.interface)
@@ -23,7 +22,7 @@ class MainController:
         # Main application loop
         while True:
             # Display the main menu and get the user's choice
-            choice = self.interface.display_main_menu()    
+            choice = self.interface.display_main_menu()  
             # Handle the user's choice by delegating to the appropriate controller
             if choice == "1":
                 self.tournament_controller.run()  # Manage tournaments
