@@ -1,5 +1,4 @@
 from models.tournament import Tournament
-from models.round import Round
 from models.player import Player
 from views.tournament_view import TournamentView
 from views.round_view import RoundView
