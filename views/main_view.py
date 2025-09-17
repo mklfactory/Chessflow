@@ -11,4 +11,4 @@ class MainView:
         print("3. Gestion des joueurs")         # Option 3: Player management
         print("4. Rapports")                    # Option 4: Reports
         print("0. Quitter")                     # Option 0: Exit the application
-        return input("Choisissez une option : ") # Prompt the user to choose
+        return input("Choisissez une option : ")  # Prompt the user to choose
