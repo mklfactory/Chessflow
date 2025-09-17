@@ -78,7 +78,7 @@ class RoundView:
             player = Player.load_by_id(player_id)  # Load player details
             name = player.full_name() if player else player_id  # Get player name or ID
             data.append([name, score])
-        print("\nCurrent standings:")
+        print("\nClassement actuel:")
         # Print the standings table
         print(tabulate(data, headers=headers, tablefmt="fancy_grid"))
 
