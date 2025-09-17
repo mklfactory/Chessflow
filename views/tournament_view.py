@@ -5,32 +5,32 @@ class TournamentView:
 
     def display_menu(self):
         # Display the main tournament management menu
-        print("\n--- Tournament Management ---")
-        print("1. Add a tournament")
-        print("2. List tournaments")
-        print("3. Edit a tournament")
-        print("4. Delete a tournament")
-        print("5. Manage a tournament (players, rounds, matches, reports)")
-        print("0. Back")
+        print("\n--- Gestion de tournoi ---")
+        print("1. Ajouter un tournoi")
+        print("2. Lister les tournois")
+        print("3. Modifier un tournoi")
+        print("4. Supprimer un tournoi")
+        print("5. Gérer un tournoi (joueurs, rondes, matchs, rapports)")
+        print("0. Retour")
         # Return the user's choice
-        return input("Your choice: ")
+        return input("Votre choix : ")
 
     def display_manage_menu(self):
         # Display the detailed tournament management menu
-        print("\n--- Detailed Tournament Management ---")
-        print("1. Add a player to the tournament")
-        print("2. List players in the tournament")
-        print("3. Create a new round")
-        print("4. View rounds and matches")
-        print("5. Tournament reports")
-        print("0. Back")
+        print("\n--- Gestion détaillée du tournoi ---")
+        print("1. Ajouter un joueur au tournoi")
+        print("2. Lister les joueurs du tournoi")
+        print("3. Créer une nouvelle ronde")
+        print("4. Voir les rondes et les matchs")
+        print("5. Rapports de tournoi")
+        print("0. Retour")
         # Return the user's choice
-        return input("Your choice: ")
+        return input("Votre choix : ")
 
     def show_tournaments(self, tournaments):
         # Display a list of tournaments
         if not tournaments:
-            print("No tournaments found.")
+            print("Aucun tournoi trouvé.")
         else:
             for t in tournaments:
                 # Print tournament details (ID, name, location, start and end dates)
@@ -39,23 +39,23 @@ class TournamentView:
     def ask_tournament_data(self):
         # Prompt the user to input tournament data
         return {
-            "name": input("Tournament name: "),
-            "location": input("Location: "),
-            "start_date": input("Start date (YYYY-MM-DD): "),
-            "end_date": input("End date (YYYY-MM-DD): "),
-            "time_control": input("Time control: "),
-            "total_rounds": int(input("Maximum number of rounds: ")),  # Input the total number of rounds
+            "name": input("Nom du tournoi : "),
+            "location": input("Lieu : "),
+            "start_date": input("Date de début (YYYY-MM-DD) : "),
+            "end_date": input("Date de fin (YYYY-MM-DD) : "),
+            "time_control": input("Contrôle de temps : "),
+            "total_rounds": int(input("Nombre maximum de rounds : ")),  # Input the total number of rounds
             "description": input("Description: "),
         }
 
     def ask_tournament_id(self):
         # Prompt the user to input a tournament ID
-        return input("Tournament ID: ")
+        return input("ID du tournoi : ")
 
     def show_players(self, players):
         # Display a list of players in the tournament
         if not players:
-            print("No players registered in this tournament.")
+            print("Aucun joueur inscrit dans ce tournoi.")
         else:
             for p in players:
                 # Print player details (ID, full name, national ID)
@@ -63,7 +63,7 @@ class TournamentView:
 
     def ask_player_id(self):
         # Prompt the user to input a player ID
-        return input("Player ID: ")
+        return input("ID du joueur : ")
 
     def show_round_summary(self, round_obj):
         # Display a summary of a round (name, start time, end time)
