@@ -1,164 +1,91 @@
 import json
+import os
 import uuid
-from models.round import Round
-from models.player import Player
+from datetime import datetime
 from models.match import Match
 
-TOURNAMENT_FILE = "data/tournaments.json"
+# File path for storing round data
+ROUNDS_FILE = "data/rounds.json"
 
 
-class Tournament:
-    def __init__(
-        self,
-        id=None,
-        name="",
-        location="",
-        start_date="",
-        end_date="",
-        time_control="",
-        description="",
-        total_rounds=4,
-        current_round=0,
-        round_ids=None,
-        player_ids=None
-    ):
-        self.id = id or str(uuid.uuid4())
-        self.name = name
-        self.location = location
-        self.start_date = start_date
-        self.end_date = end_date
-        self.time_control = time_control
-        self.description = description
-        self.total_rounds = total_rounds
-        self.current_round = current_round
-        self.round_ids = round_ids or []
-        self.player_ids = player_ids or []
+class Round:
+    def __init__(self, name, round_id=None, match_ids=None, start_time=None, end_time=None):
+        # Initialize a Round object with a name, unique ID, match IDs, start time, and end time
+        self.id = round_id or str(uuid.uuid4())  # Generate a unique ID if not provided
+        self.name = name  # Name of the round
+        self.match_ids = match_ids or []  # List of match IDs associated with the round
+        self.start_time = start_time  # Start time of the round
+        self.end_time = end_time  # End time of the round
+
+    @property
+    def matches(self):
+        # Retrieve all matches associated with this round
+        all_matches = Match.load_all()  # Load all matches from storage
+        return [m for m in all_matches if m.id in self.match_ids]  # Filter matches by match IDs
+
+    def add_match(self, match):
+        # Add a match to the round
+        if match.id not in self.match_ids:  # Check if the match is not already added
+            self.match_ids.append(match.id)  # Add the match ID to the list
+            match.save()  # Save the match to storage
+            self.save()  # Save the updated round to storage
 
     def to_dict(self):
+        # Convert the Round object to a dictionary for serialization
         return {
             "id": self.id,
             "name": self.name,
-            "location": self.location,
-            "start_date": self.start_date,
-            "end_date": self.end_date,
-            "time_control": self.time_control,
-            "description": self.description,
-            "total_rounds": self.total_rounds,
-            "current_round": self.current_round,
-            "round_ids": self.round_ids,
-            "player_ids": self.player_ids,
+            "match_ids": self.match_ids,
+            "start_time": self.start_time,
+            "end_time": self.end_time,
         }
 
     @classmethod
     def from_dict(cls, data):
+        # Create a Round object from a dictionary
         return cls(
-            id=data.get("id"),
-            name=data.get("name", ""),
-            location=data.get("location", ""),
-            start_date=data.get("start_date", ""),
-            end_date=data.get("end_date", ""),
-            time_control=data.get("time_control", ""),
-            description=data.get("description", ""),
-            total_rounds=data.get("total_rounds", 4),
-            current_round=data.get("current_round", 0),
-            round_ids=data.get("round_ids", []),
-            player_ids=data.get("player_ids", [])
+            name=data.get("name", ""),  # Get the name of the round
+            round_id=data.get("id"),  # Get the round ID
+            match_ids=data.get("match_ids", []),  # Get the list of match IDs
+            start_time=data.get("start_time"),  # Get the start time
+            end_time=data.get("end_time")  # Get the end time
         )
 
-    @property
-    def players(self):
-        return [Player.load_by_id(pid) for pid in self.player_ids if Player.load_by_id(pid)]
-
-    def add_player(self, player):
-        if player.id not in self.player_ids:
-            self.player_ids.append(player.id)
-            self.save()
-
-    @property
-    def rounds(self):
-        return [Round.load_by_id(rid) for rid in self.round_ids if Round.load_by_id(rid)]
-
-    def create_next_round(self):
-        if self.current_round >= self.total_rounds:
-            return None
-        self.current_round += 1
-        round_name = f"Round {self.current_round}"
-        matches = self.generate_pairings()
-        new_round = Round(name=round_name)
-        new_round.save()
-        for match in matches:
-            new_round.add_match(match)
-        self.round_ids.append(new_round.id)
-        self.save()
-        return new_round
-
-    def generate_pairings(self):
-        import random
-        if self.current_round == 0:
-            players = self.players[:]
-            random.shuffle(players)
-        else:
-            points = self.get_player_points()
-            players = self.players[:]
-            players.sort(key=lambda p: (points[p.id], random.random()), reverse=True)
-        pairings = []
-        used = set()
-        i = 0
-        while i < len(players):
-            p1 = players[i]
-            if p1.id in used:
-                i += 1
-                continue
-            opponent = None
-            for j in range(i + 1, len(players)):
-                p2 = players[j]
-                if p2.id not in used:
-                    opponent = p2
-                    break
-            match = Match(player1_id=p1.id, player2_id=opponent.id if opponent else None)
-            match.save()
-            pairings.append(match)
-            used.add(p1.id)
-            if opponent:
-                used.add(opponent.id)
-            i += 1
-        return pairings
-
-    def get_player_points(self):
-        points = {p.id: 0 for p in self.players}
-        for r in self.rounds:
-            for m in r.matches:
-                if m.player1_id:
-                    points[m.player1_id] += m.score1
-                if m.player2_id:
-                    points[m.player2_id] += m.score2
-        return points
-
     def save(self):
-        tournaments = Tournament.load_all()
-        tournaments = [t for t in tournaments if t.id != self.id]
-        tournaments.append(self)
-        with open(TOURNAMENT_FILE, "w", encoding="utf-8") as f:
-            json.dump([t.to_dict() for t in tournaments], f, indent=4, ensure_ascii=False)
+        # Save the current round to the database (JSON file)
+        rounds = Round.load_all()  # Load all existing rounds
+        rounds = [r for r in rounds if r.id != self.id]  # Remove any existing round with the same ID
+        rounds.append(self)  # Add the current round
+        with open(ROUNDS_FILE, "w", encoding="utf-8") as f:
+            # Serialize all rounds to JSON and save to the file
+            json.dump([r.to_dict() for r in rounds], f, indent=4, ensure_ascii=False)
 
-    @classmethod
-    def load_all(cls):
-        try:
-            with open(TOURNAMENT_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            return [cls.from_dict(t) for t in data]
-        except FileNotFoundError:
-            return []
+    @staticmethod
+    def load_all():
+        # Load all rounds from the JSON file
+        if not os.path.exists(ROUNDS_FILE):  # Check if the file exists
+            return []  # Return an empty list if the file doesn't exist
+        with open(ROUNDS_FILE, "r", encoding="utf-8") as f:
+            try:
+                data = json.load(f)  # Load JSON data
+                return [Round.from_dict(d) for d in data]  # Deserialize JSON data into Round objects
+            except json.JSONDecodeError:
+                return []  # Return an empty list if the file is corrupted
 
-    @classmethod
-    def load_by_id(cls, tournament_id):
-        for t in cls.load_all():
-            if t.id == tournament_id:
-                return t
-        return None
+    @staticmethod
+    def load_by_id(round_id):
+        # Load a specific round by its ID
+        for r in Round.load_all():  # Iterate through all rounds
+            if r.id == round_id:  # Find the round with the given ID
+                return r  # Return the round if found
+        return None  # Return None if no round is found
 
-    @classmethod
-    def delete(cls, tournament_id):
-        tournaments = [t for t in cls.load_all() if t.id != tournament_id]
-        with open(TOURNAMENT_FILE, "w", encoding="utf-8") as f:
-            json.dump([t.to_dict() for t in tournaments], f, indent=4, ensure_ascii=False)
+    def start_round(self):
+        # Set the start time of the round to the current time
+        self.start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.save()  # Save the updated round to storage
+
+    def end_round(self):
+        # Set the end time of the round to the current time
+        self.end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.save()  # Save the updated round
