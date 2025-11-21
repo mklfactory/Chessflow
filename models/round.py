@@ -4,34 +4,60 @@ import uuid
 from datetime import datetime
 from models.match import Match
 
-# File path for storing round data
 ROUNDS_FILE = "data/rounds.json"
 
-
 class Round:
+    """
+    Represents a round in a tournament, containing matches with associated metadata and methods for persistence.
+    """
+
     def __init__(self, name, round_id=None, match_ids=None, start_time=None, end_time=None):
-        # Initialize a Round object with a name, unique ID, match IDs, start time, and end time
-        self.id = round_id or str(uuid.uuid4())  # Generate a unique ID if not provided
+        """
+        Initialize a Round instance.
+
+        Args:
+            name (str): Name of the round.
+            round_id (str, optional): Unique ID of the round. Generated if not provided.
+            match_ids (list, optional): List of match IDs for matches in the round.
+            start_time (str, optional): Start time of the round.
+            end_time (str, optional): End time of the round.
+        """
+        self.id = round_id or str(uuid.uuid4())
         self.name = name
-        self.match_ids = match_ids or []  # List of match IDs associated with the round
-        self.start_time = start_time  # Start time of the round
-        self.end_time = end_time  # End time of the round
+        self.match_ids = match_ids or []
+        self.start_time = start_time
+        self.end_time = end_time
 
     @property
     def matches(self):
-        # Retrieve all matches associated with this round
-        all_matches = Match.load_all()  # Load all matches from storage
-        return [m for m in all_matches if m.id in self.match_ids]  # Filter matches by match IDs
+        """
+        Retrieve all Match instances associated with this round.
+
+        Returns:
+            list: List of Match instances.
+        """
+        all_matches = Match.load_all()
+        return [m for m in all_matches if m.id in self.match_ids]
 
     def add_match(self, match):
-        # Add a match to the round
-        if match.id not in self.match_ids:  # Check if the match is not already added
-            self.match_ids.append(match.id)  # Add the match ID to the list
-            match.save()  # Save the match to storage
-            self.save()  # Save the updated round to storage
+        """
+        Add a Match to the round and persist the change.
+
+        Args:
+            match (Match): Match instance to add.
+        """
+        if match.id not in self.match_ids:
+            self.match_ids.append(match.id)
+            match.save()
+            self.save()
 
     def to_dict(self):
-        # Convert the Round object to a dictionary for serialization
+        """
+        Convert the Round instance to a dictionary for serialization.
+
+        Returns:
+            dict: Dictionary representing the round.
+        """
         return {
             "id": self.id,
             "name": self.name,
@@ -42,7 +68,15 @@ class Round:
 
     @classmethod
     def from_dict(cls, data):
-        # Create a Round object from a dictionary
+        """
+        Create a Round instance from a dictionary.
+
+        Args:
+            data (dict): Dictionary of round attributes.
+
+        Returns:
+            Round: Instance of Round class.
+        """
         return cls(
             name=data.get("name", ""),
             round_id=data.get("id"),
@@ -52,40 +86,58 @@ class Round:
         )
 
     def save(self):
-        # Save the current round to the database (JSON file)
-        rounds = Round.load_all()  # Load all existing rounds
-        rounds = [r for r in rounds if r.id != self.id]  # Remove any existing round with the same ID
-        rounds.append(self)  # Add the current round
+        """
+        Save or update the round in the JSON file.
+        """
+        rounds = Round.load_all()
+        rounds = [r for r in rounds if r.id != self.id]
+        rounds.append(self)
         with open(ROUNDS_FILE, "w", encoding="utf-8") as f:
-            # Serialize all rounds to JSON and save to the file
             json.dump([r.to_dict() for r in rounds], f, indent=4, ensure_ascii=False)
 
     @staticmethod
     def load_all():
-        # Load all rounds from the JSON file
-        if not os.path.exists(ROUNDS_FILE):  # Check if the file exists
-            return []  # Return an empty list if the file doesn't exist
+        """
+        Load all rounds from the JSON file.
+
+        Returns:
+            list: List of Round instances.
+        """
+        if not os.path.exists(ROUNDS_FILE):
+            return []
         with open(ROUNDS_FILE, "r", encoding="utf-8") as f:
             try:
-                data = json.load(f)  # Load JSON data
-                return [Round.from_dict(d) for d in data]  # Deserialize JSON data into Round objects
+                data = json.load(f)
+                return [Round.from_dict(d) for d in data]
             except json.JSONDecodeError:
-                return []  # Return an empty list if the file is corrupted
+                return []
 
     @staticmethod
     def load_by_id(round_id):
-        # Load a specific round by its ID
-        for r in Round.load_all():  # Iterate through all rounds
-            if r.id == round_id:  # Find the round with the given ID
+        """
+        Retrieve a round by its unique ID.
+
+        Args:
+            round_id (str): Unique round ID.
+
+        Returns:
+            Round or None: Round instance if found, None otherwise.
+        """
+        for r in Round.load_all():
+            if r.id == round_id:
                 return r
-        return None  # Return None if no round is found
+        return None
 
     def start_round(self):
-        # Set the start time of the round to the current time
+        """
+        Set the start time of the round to the current time and persist the change.
+        """
         self.start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.save()  # Save the updated round to storage
+        self.save()
 
     def end_round(self):
-        # Set the end time of the round to the current time
+        """
+        Set the end time of the round to the current time and persist the change.
+        """
         self.end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.save()  # Save the updated round to storage
+        self.save()

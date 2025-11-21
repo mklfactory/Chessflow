@@ -6,8 +6,12 @@ from models.match import Match
 
 TOURNAMENT_FILE = "data/tournaments.json"
 
-
 class Tournament:
+    """
+    Represents a tournament with metadata, rounds, and players. 
+    Provides methods for tournament management and persistence.
+    """
+
     def __init__(
         self,
         id=None,
@@ -22,6 +26,22 @@ class Tournament:
         round_ids=None,
         player_ids=None
     ):
+        """
+        Initialize a Tournament instance.
+
+        Args:
+            id (str, optional): Unique tournament ID. Generated if not provided.
+            name (str): Tournament name.
+            location (str): Tournament location.
+            start_date (str): Tournament start date.
+            end_date (str): Tournament end date.
+            time_control (str): Time control description.
+            description (str): Tournament description.
+            total_rounds (int): Maximum number of rounds.
+            current_round (int): Index of the current round.
+            round_ids (list, optional): List of round IDs.
+            player_ids (list, optional): List of player IDs.
+        """
         self.id = id or str(uuid.uuid4())
         self.name = name
         self.location = location
@@ -35,6 +55,12 @@ class Tournament:
         self.player_ids = player_ids or []
 
     def to_dict(self):
+        """
+        Convert the Tournament instance to a dictionary for serialization.
+
+        Returns:
+            dict: Dictionary representing the tournament.
+        """
         return {
             "id": self.id,
             "name": self.name,
@@ -51,6 +77,15 @@ class Tournament:
 
     @classmethod
     def from_dict(cls, data):
+        """
+        Create a Tournament instance from a dictionary.
+
+        Args:
+            data (dict): Dictionary of tournament attributes.
+
+        Returns:
+            Tournament: Instance of Tournament class.
+        """
         return cls(
             id=data.get("id"),
             name=data.get("name", ""),
@@ -67,18 +102,42 @@ class Tournament:
 
     @property
     def players(self):
+        """
+        Retrieve all Player instances participating in this tournament.
+
+        Returns:
+            list: List of Player instances.
+        """
         return [Player.load_by_id(pid) for pid in self.player_ids if Player.load_by_id(pid)]
 
     def add_player(self, player):
+        """
+        Add a player to the tournament.
+
+        Args:
+            player (Player): Player instance to add.
+        """
         if player.id not in self.player_ids:
             self.player_ids.append(player.id)
             self.save()
 
     @property
     def rounds(self):
+        """
+        Retrieve all Round instances associated with this tournament.
+
+        Returns:
+            list: List of Round instances.
+        """
         return [Round.load_by_id(rid) for rid in self.round_ids if Round.load_by_id(rid)]
 
     def create_next_round(self):
+        """
+        Create and add the next round to the tournament.
+
+        Returns:
+            Round or None: Created Round instance if possible, None if all rounds exist.
+        """
         if self.current_round >= self.total_rounds:
             return None
         self.current_round += 1
@@ -93,6 +152,12 @@ class Tournament:
         return new_round
 
     def generate_pairings(self):
+        """
+        Generate pairings for the next round, shuffling or sorting by points.
+
+        Returns:
+            list: List of Match instances.
+        """
         import random
         if self.current_round == 0:
             players = self.players[:]
@@ -125,6 +190,12 @@ class Tournament:
         return pairings
 
     def get_player_points(self):
+        """
+        Calculate each player's points based on all rounds and matches.
+
+        Returns:
+            dict: Mapping from player ID to point total.
+        """
         points = {p.id: 0 for p in self.players}
         for r in self.rounds:
             for m in r.matches:
@@ -135,6 +206,9 @@ class Tournament:
         return points
 
     def save(self):
+        """
+        Save or update the tournament in the JSON file.
+        """
         tournaments = Tournament.load_all()
         tournaments = [t for t in tournaments if t.id != self.id]
         tournaments.append(self)
@@ -143,6 +217,12 @@ class Tournament:
 
     @classmethod
     def load_all(cls):
+        """
+        Load all tournaments from the JSON file.
+
+        Returns:
+            list: List of Tournament instances.
+        """
         try:
             with open(TOURNAMENT_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -152,6 +232,15 @@ class Tournament:
 
     @classmethod
     def load_by_id(cls, tournament_id):
+        """
+        Retrieve a tournament by its unique ID.
+
+        Args:
+            tournament_id (str): Tournament ID.
+
+        Returns:
+            Tournament or None: Tournament instance if found, None otherwise.
+        """
         for t in cls.load_all():
             if t.id == tournament_id:
                 return t
@@ -159,6 +248,12 @@ class Tournament:
 
     @classmethod
     def delete(cls, tournament_id):
+        """
+        Delete a tournament by its unique ID.
+
+        Args:
+            tournament_id (str): ID of the tournament to delete.
+        """
         tournaments = [t for t in cls.load_all() if t.id != tournament_id]
         with open(TOURNAMENT_FILE, "w", encoding="utf-8") as f:
             json.dump([t.to_dict() for t in tournaments], f, indent=4, ensure_ascii=False)
