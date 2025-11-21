@@ -9,14 +9,11 @@ class RoundController:
     Handles manual round creation, displaying rounds, entering match results, and showing standings.
     """
 
-    def __init__(self, interface):
+    def __init__(self):
         """
         Initialize the RoundController and its associated view.
-
-        Args:
-            interface: The main application interface for the view.
         """
-        self.view = RoundView(interface)
+        self.view = RoundView()
 
     def ask_tournament_selection(self):
         """
@@ -118,4 +115,16 @@ class RoundController:
             self.view.show_message("Tournoi introuvable.")
             return
         points = self.calculate_points(tournament)
-        self
+        self.view.show_standings(points)
+
+    def calculate_points(self, tournament):
+        """
+        Calculate player points for a tournament.
+
+        Args:
+            tournament (Tournament): Tournament instance.
+
+        Returns:
+            dict: Mapping from player ID to points.
+        """
+        return tournament.get_player_points()

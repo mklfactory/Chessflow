@@ -8,14 +8,11 @@ class ReportsController:
     Handles reports related to players, tournaments, and rounds.
     """
 
-    def __init__(self, interface):
+    def __init__(self):
         """
         Initialize the ReportsController and its associated view.
-
-        Args:
-            interface: The main application interface for the view.
         """
-        self.view = ReportView(interface)
+        self.view = ReportView()
 
     def run(self):
         """

@@ -7,14 +7,11 @@ class PlayerController:
     Handles player creation, listing, update, and deletion.
     """
 
-    def __init__(self, interface):
+    def __init__(self):
         """
         Initialize the PlayerController and its associated view.
-
-        Args:
-            interface: The main application interface for the view.
         """
-        self.view = PlayerView(interface)
+        self.view = PlayerView()
 
     def run(self):
         """

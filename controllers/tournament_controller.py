@@ -9,15 +9,12 @@ class TournamentController:
     Handles creation, listing, updating, and deletion of tournaments, as well as player management and reporting.
     """
 
-    def __init__(self, interface):
+    def __init__(self):
         """
         Initialize the TournamentController and its associated views.
-
-        Args:
-            interface: The main application interface for the views.
         """
-        self.view = TournamentView(interface)
-        self.round_view = RoundView(interface)
+        self.view = TournamentView()
+        self.round_view = RoundView()
 
     def ask_tournament_selection(self):
         """
