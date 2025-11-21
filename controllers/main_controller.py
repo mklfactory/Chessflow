@@ -15,10 +15,10 @@ class MainController:
         Initialize the main controller and all sub-controllers.
         """
         self.interface = MainView()
-        self.tournament_controller = TournamentController(self.interface)
-        self.round_controller = RoundController(self.interface)
-        self.player_controller = PlayerController(self.interface)
-        self.reports_controller = ReportsController(self.interface)
+        self.tournament_controller = TournamentController()
+        self.round_controller = RoundController()
+        self.player_controller = PlayerController()
+        self.reports_controller = ReportsController()
 
     def run(self):
         """
