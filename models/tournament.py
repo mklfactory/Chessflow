@@ -209,7 +209,7 @@ class Tournament:
         """
         Save or update the tournament in the JSON file.
         """
-        tournaments = Tournament.load_all()
+        tournaments = self.__class__.load_all()
         tournaments = [t for t in tournaments if t.id != self.id]
         tournaments.append(self)
         with open(TOURNAMENT_FILE, "w", encoding="utf-8") as f:

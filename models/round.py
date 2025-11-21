@@ -89,14 +89,14 @@ class Round:
         """
         Save or update the round in the JSON file.
         """
-        rounds = Round.load_all()
+        rounds = self.__class__.load_all()
         rounds = [r for r in rounds if r.id != self.id]
         rounds.append(self)
         with open(ROUNDS_FILE, "w", encoding="utf-8") as f:
             json.dump([r.to_dict() for r in rounds], f, indent=4, ensure_ascii=False)
 
-    @staticmethod
-    def load_all():
+    @classmethod
+    def load_all(cls):
         """
         Load all rounds from the JSON file.
 
@@ -108,12 +108,12 @@ class Round:
         with open(ROUNDS_FILE, "r", encoding="utf-8") as f:
             try:
                 data = json.load(f)
-                return [Round.from_dict(d) for d in data]
+                return [cls.from_dict(d) for d in data]
             except json.JSONDecodeError:
                 return []
 
-    @staticmethod
-    def load_by_id(round_id):
+    @classmethod
+    def load_by_id(cls, round_id):
         """
         Retrieve a round by its unique ID.
 
@@ -123,7 +123,7 @@ class Round:
         Returns:
             Round or None: Round instance if found, None otherwise.
         """
-        for r in Round.load_all():
+        for r in cls.load_all():
             if r.id == round_id:
                 return r
         return None

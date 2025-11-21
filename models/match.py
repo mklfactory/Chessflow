@@ -59,13 +59,13 @@ class Match:
         """
         Save the current match to the JSON file, updating existing if necessary.
         """
-        matches = Match.load_all()
+        matches = self.__class__.load_all()
         matches = [m for m in matches if m.id != self.id]
         matches.append(self)
-        Match.save_all(matches)
+        self.__class__.save_all(matches)
 
-    @staticmethod
-    def save_all(matches):
+    @classmethod
+    def save_all(cls, matches):
         """
         Save a list of Match instances to the JSON file.
 
@@ -76,8 +76,8 @@ class Match:
         with open(MATCHES_FILE, "w", encoding="utf-8") as f:
             json.dump([m.to_dict() for m in matches], f, indent=4)
 
-    @staticmethod
-    def load_all():
+    @classmethod
+    def load_all(cls):
         """
         Load all matches from the JSON file.
 
@@ -91,10 +91,10 @@ class Match:
                 data = json.load(f)
             except json.JSONDecodeError:
                 return []
-        return [Match(**m) for m in data]
+        return [cls(**m) for m in data]
 
-    @staticmethod
-    def load_by_id(match_id):
+    @classmethod
+    def load_by_id(cls, match_id):
         """
         Retrieve a match by its unique ID.
 
@@ -104,20 +104,20 @@ class Match:
         Returns:
             Match or None: Match instance if found, None otherwise.
         """
-        matches = Match.load_all()
+        matches = cls.load_all()
         for m in matches:
             if m.id == match_id:
                 return m
         return None
 
-    @staticmethod
-    def delete_by_id(match_id):
+    @classmethod
+    def delete_by_id(cls, match_id):
         """
         Delete a match by its unique ID in the persistent storage.
 
         Args:
             match_id (str): Unique match ID to delete.
         """
-        matches = Match.load_all()
+        matches = cls.load_all()
         matches = [m for m in matches if m.id != match_id]
-        Match.save_all(matches)
+        cls.save_all(matches)
