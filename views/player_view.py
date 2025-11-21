@@ -7,12 +7,9 @@ class PlayerView:
     View component for player management, providing rich console output for user interactions.
     """
 
-    def __init__(self, interface):
+    def __init__(self):
         """
         Initialize the PlayerView and create a Console object for rich output.
-
-        Args:
-            interface: The main application interface.
         """
         self.console = Console()
 

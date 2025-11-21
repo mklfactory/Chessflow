@@ -1,17 +1,14 @@
-from models.player import Player
 from tabulate import tabulate
+from models.player import Player
 
 class RoundView:
     """
     View component for round management, providing formatted console output for rounds, matches, and standings.
     """
 
-    def __init__(self, interface):
+    def __init__(self):
         """
         Initialize the RoundView instance.
-
-        Args:
-            interface: The main application interface.
         """
         pass
 

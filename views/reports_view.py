@@ -6,12 +6,9 @@ class ReportView:
     View component for displaying reports, listings, and round/match details in a formatted table.
     """
 
-    def __init__(self, interface):
+    def __init__(self):
         """
         Initialize the ReportView instance.
-
-        Args:
-            interface: The main application interface.
         """
         pass
 

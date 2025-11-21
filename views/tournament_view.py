@@ -3,14 +3,11 @@ class TournamentView:
     View component for tournament management, providing console interface for tournament-related actions.
     """
 
-    def __init__(self, interface):
+    def __init__(self):
         """
         Initialize the TournamentView instance.
-
-        Args:
-            interface: The main application interface.
         """
-        self.interface = interface
+        pass
 
     def display_menu(self):
         """
