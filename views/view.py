@@ -1,35 +1,56 @@
 class View:
+    """
+    Basic interface view component for displaying menus and prompting user input in the console.
+    """
+
     def main_menu(self):
-        # Display the main menu with options
+        """
+        Display the main menu and return the user's choice.
+
+        Returns:
+            str: User's menu selection.
+        """
         print("\n--- Main Menu ---")
         print("1. Add a player")
         print("2. Create a tournament")
         print("3. View tournaments")
         print("4. Quit")
-        # Return the user's choice
         return input("Your choice: ")
 
     def get_tournament_info(self):
-        # Prompt the user to input tournament information
+        """
+        Prompt the user to enter tournament information.
+
+        Returns:
+            tuple: Tournament data as (name, location, start, end, description).
+        """
         print("\n--- Tournament Creation ---")
-        name = input("Tournament name: ")  # Input the tournament name
-        place = input("Location: ")        # Input the tournament location
-        start = input("Start date: ")      # Input the start date
-        end = input("End date: ")          # Input the end date
-        description = input("Description: ")  # Input the tournament description
-        # Return the collected tournament information
+        name = input("Tournament name: ")
+        place = input("Location: ")
+        start = input("Start date: ")
+        end = input("End date: ")
+        description = input("Description: ")
         return name, place, start, end, description
 
     def get_player_info(self):
-        # Prompt the user to input player information
+        """
+        Prompt the user to enter player information.
+
+        Returns:
+            tuple: Player data as (chess_id, last, first, birth).
+        """
         print("\n--- Add a Player ---")
-        chess_id = input("National chess ID (e.g., AB12345): ")  # Input the player's chess ID
-        last = input("Last name: ")                              # Input the player's last name
-        first = input("First name: ")                            # Input the player's first name
-        birth = input("Date of birth: ")                         # Input the player's date of birth
-        # Return the collected player information
+        chess_id = input("National chess ID (e.g., AB12345): ")
+        last = input("Last name: ")
+        first = input("First name: ")
+        birth = input("Date of birth: ")
         return chess_id, last, first, birth
 
     def display(self, msg):
-        # Display a message to the user
+        """
+        Display a message to the user.
+
+        Args:
+            msg (str): The message to display.
+        """
         print("\n" + msg)
